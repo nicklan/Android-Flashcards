@@ -86,7 +86,6 @@ public class TimedFlashcards extends ListActivity implements Runnable {
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line;
 		ArrayList<Card> cardList = new ArrayList<Card>();
-		System.out.println("PARSING CSV");
 		while((line = br.readLine()) != null) {
 			StringTokenizer stok = new StringTokenizer(line,",");
 			if (stok.countTokens() < 2) {
@@ -95,9 +94,7 @@ public class TimedFlashcards extends ListActivity implements Runnable {
 			}
 			if (stok.countTokens() > 2) 
 				System.err.println("Warning, too many fields on a line, ignoring all but the first two: "+line);
-			Card c = new Card(stok.nextToken().trim(),stok.nextToken().trim());
-			cardList.add(c);
-			System.out.println("Added: "+c);
+			cardList.add(new Card(stok.nextToken().trim(),stok.nextToken().trim()));
 		}
 		return new Lesson(cardList.toArray(new Card[0]));
 	}

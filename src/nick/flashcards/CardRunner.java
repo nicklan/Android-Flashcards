@@ -38,8 +38,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 
 	private ViewFlipper ac_flip,bc_flip,cc_flip;
 
-	private ArrayList<Integer> history = new ArrayList<Integer>();
-	private int list_pos,view_pos;
+	private int view_pos,card_pos;
 
 	@Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -107,11 +106,9 @@ public class CardRunner extends Activity implements OnGestureListener {
 			cc_flip = (ViewFlipper) slideFlipper.getChildAt(2);
 			cc_flip.setInAnimation(alphain);
 			cc_flip.setOutAnimation(alphaout);
-			int i = lesson.pickCard();
-			curCard = lesson.getCard(i);
-			history.add(new Integer(i));
+			card_pos = 0;
+			curCard = lesson.getCard(card_pos);
 			showingFront = true;
-			list_pos = 1; // one index list to make easy to compare to len
 			view_pos = 0;
 			setCardToCurrent(ac_flip);
 		}
@@ -189,9 +186,9 @@ public class CardRunner extends Activity implements OnGestureListener {
 	}
 
 	private void setCardToCurrent(ViewFlipper card) {
-		((TextView)(((LinearLayout)(card.getChildAt(1))).getChildAt(0))).setText(curCard.front);
-		((TextView)(((LinearLayout)(card.getChildAt(0))).getChildAt(0))).setText(curCard.back);
-		((TextView)(((LinearLayout)(card.getChildAt(0))).getChildAt(1))).setText(""+list_pos);
+		((TextView)(((LinearLayout)(card.getChildAt(0))).getChildAt(0))).setText(curCard.front);
+		((TextView)(((LinearLayout)(card.getChildAt(1))).getChildAt(0))).setText(curCard.back);
+		((TextView)(((LinearLayout)(card.getChildAt(0))).getChildAt(1))).setText(""+(card_pos+1));
 	}
 
 	@Override
@@ -220,16 +217,12 @@ public class CardRunner extends Activity implements OnGestureListener {
   @Override
   public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 		if (velocityX < -1000) { // next card
-			Card nc = null;
-			if (list_pos == history.size()) { // need a new card
-				int i = lesson.pickCard();
-				nc = lesson.getCard(i);
-				history.add(new Integer(i));
+			card_pos++;
+			if (card_pos >= lesson.cardCount()) {
+				card_pos--;
+				return true; // should bounce
 			}
-			else
-				nc = lesson.getCard(history.get(list_pos));
-			list_pos++;
-			curCard = nc;
+			curCard = lesson.getCard(card_pos);
 			ViewFlipper cur = null;
 			if (!showingFront)
 				cur = currentView();
@@ -245,10 +238,9 @@ public class CardRunner extends Activity implements OnGestureListener {
 				cur.showNext();
 		}
 		if (velocityX > 1000) { // prev card
-			if (list_pos == 1) return true; // maybe animate a bounce here?
-			Card pc = null;
-			list_pos--;
-			curCard = lesson.getCard(history.get(list_pos-1));
+			if (card_pos == 0) return true; // maybe animate a bounce here?
+			card_pos--;
+			curCard = lesson.getCard(card_pos);
 			ViewFlipper cur = null;
 			if (!showingFront)
 				cur = currentView();
