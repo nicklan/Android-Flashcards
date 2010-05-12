@@ -24,8 +24,8 @@ class Card implements Serializable {
 	}
 	private void writeObject(ObjectOutputStream stream)
 		throws IOException {
-		stream.writeObject(front);
 		stream.writeObject(back);
+		stream.writeObject(front);
 	}
 	private void readObjectNoData() 
 		throws ObjectStreamException {
