@@ -143,7 +143,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 	private Lesson lesson;
 	private String lname;
 	private Card curCard;
-	private boolean showingFront;
+	private boolean showingFront,gameDone = false;
 
 	private GestureDetector gestureScanner; 
 	private ViewFlipper slideFlipper;
@@ -274,6 +274,14 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 			if (!showingFront)
 				acFlip.showNext();
 
+			View.OnClickListener dslist = new View.OnClickListener() {
+					public void onClick(View v) { 
+						// Don't show this card anymore
+						pickCard();
+						if (curWrap != null)
+							goForwardsTo(curWrap.card);
+					}
+				};
 			View.OnClickListener rlist = new View.OnClickListener() {
 					public void onClick(View v) { 
 						// Got it right, schedule further in future
@@ -282,40 +290,48 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 						if (curWrap.numRight < 6) {
 							switch(curWrap.numRight) {
 							case 1:
-								nt = curCount+10;
+								nt = curCount+5+((int)(Math.random()*10));
 								break;
 							case 2:
-								nt = curCount+25;
+								nt = curCount+15+((int)(Math.random()*20));
+								break;
 							case 3:
-								nt = curCount+50;
+								nt = curCount+35+((int)(Math.random()*50));
+								break;
 							case 4:
-								nt = curCount+100;
+								nt = curCount+50+((int)(Math.random()*150));
+								break;
 							case 5:
-								nt = curCount+250;
+								nt = curCount+150+((int)(Math.random()*200));
+								break;
 							}
 							curWrap.target = nt;
 							curWrap.timestamp = System.currentTimeMillis();
 							queue.add(curWrap);
 						}
 						pickCard();
-						goForwardsTo(curWrap.card);
+						if (curWrap != null)
+							goForwardsTo(curWrap.card);
 					}
 				};
 			View.OnClickListener wlist = new View.OnClickListener() {
 					public void onClick(View v) {
 						// Got it wrong, schedule soon
 						curWrap.numRight=0;
-						curWrap.target = curCount+3;
+						curWrap.target = curCount+1+((int)(Math.random()*7));
 						curWrap.timestamp = System.currentTimeMillis();
 						queue.add(curWrap);
 						pickCard();
-						goForwardsTo(curWrap.card);
+						if (curWrap != null)
+							goForwardsTo(curWrap.card);
 					}
 				};
 			((Button)(acFlip.findViewById(R.id.right_button))).setOnClickListener(rlist);
 			((Button)(bcFlip.findViewById(R.id.right_button))).setOnClickListener(rlist);
 			((Button)(acFlip.findViewById(R.id.wrong_button))).setOnClickListener(wlist);
 			((Button)(bcFlip.findViewById(R.id.wrong_button))).setOnClickListener(wlist);			
+			((Button)(acFlip.findViewById(R.id.dont_show_button))).setOnClickListener(dslist);
+			((Button)(bcFlip.findViewById(R.id.dont_show_button))).setOnClickListener(dslist);			
 		}
 	}
 
@@ -324,14 +340,16 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putBoolean("switch_front_back", switch_front_back);
 		editor.commit();
-		StateWrapper sw = new StateWrapper(curCount,showingFront, curWrap,queue,available);
-		try {
-			deleteFile(lname+".ss");
-			ObjectOutputStream out = new ObjectOutputStream(openFileOutput(lname+".ss",0));
-			out.writeObject(sw);
-			out.close();
-		} catch(Exception e) {
-			e.printStackTrace();
+		if (!gameDone) {
+			StateWrapper sw = new StateWrapper(curCount,showingFront, curWrap,queue,available);
+			try {
+				deleteFile(lname+".ss");
+				ObjectOutputStream out = new ObjectOutputStream(openFileOutput(lname+".ss",0));
+				out.writeObject(sw);
+				out.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -350,8 +368,10 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		StateWrapper sw = new StateWrapper(curCount,showingFront, curWrap,queue,available);
-		outState.putSerializable("savedState",sw);
+		if (!gameDone) {
+			StateWrapper sw = new StateWrapper(curCount,showingFront, curWrap,queue,available);
+			outState.putSerializable("savedState",sw);
+		}
 	}
 
 	/*
@@ -369,8 +389,22 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 		}
 		else
 			curWrap = queue.poll();
-		curCard = lesson.getCard(curWrap.card);
-		curCount++;
+		if (curWrap == null) { // nothing left to show
+			gameDone = true;
+			AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+			alertDialog.setTitle("Congratulations!");
+			alertDialog.setMessage("You got every card correct in the desk 5 times in a row!  This run is now over.  You can start a new run by choosing 'Adaptive Memory Game' again");
+			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						deleteFile(lname+".ss");
+						finish();
+						return;
+					} });
+			alertDialog.show();
+		} else {
+			curCard = lesson.getCard(curWrap.card);
+			curCount++;
+		}
 	}
 
 	// fill in animations

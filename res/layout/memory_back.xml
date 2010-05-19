@@ -26,15 +26,18 @@
 								android:orientation="horizontal"
 								android:layout_width="fill_parent"
 								android:layout_height="wrap_content">
+		<Button android:id="@+id/dont_show_button"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginRight="15px"
+						android:text="Don't Show"/>
 		<Button android:id="@+id/right_button"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:paddingLeft="10px"
-						android:text="I Got This Right"/>
+						android:text="I'm Right"/>
 		<Button android:id="@+id/wrong_button"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:paddingRight="10px"
-						android:text="I Got This Wrong"/>
+						android:text="I'm Wrong"/>
 	</LinearLayout>
 </LinearLayout>

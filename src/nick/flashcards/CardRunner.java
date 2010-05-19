@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -41,7 +42,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 	private GestureDetector gestureScanner; 
 	private ViewFlipper slideFlipper;
 
-	private ViewFlipper ac_flip,bc_flip,cc_flip;
+	private ViewFlipper acFlip,bcFlip,ccFlip;
 
 	private int view_pos,card_pos;
 
@@ -119,24 +120,30 @@ public class CardRunner extends Activity implements OnGestureListener {
 			createAnimations();
 			lesson = l;
 			slideFlipper = (ViewFlipper) findViewById(R.id.slide_flipper);
-			ac_flip = (ViewFlipper) slideFlipper.getChildAt(0);
-			ac_flip.setInAnimation(alphain);
-			ac_flip.setOutAnimation(alphaout);
-			bc_flip = (ViewFlipper) slideFlipper.getChildAt(1);
-			bc_flip.setInAnimation(alphain);
-			bc_flip.setOutAnimation(alphaout);
-			cc_flip = (ViewFlipper) slideFlipper.getChildAt(2);
-			cc_flip.setInAnimation(alphain);
-			cc_flip.setOutAnimation(alphaout);
+			acFlip = (ViewFlipper) slideFlipper.getChildAt(0);
+			acFlip.setInAnimation(alphain);
+			acFlip.setOutAnimation(alphaout);
+			((ScrollView)(acFlip.findViewById(R.id.card_front_scroll))).setFillViewport(true);
+			((ScrollView)(acFlip.findViewById(R.id.card_back_scroll))).setFillViewport(true);
+			bcFlip = (ViewFlipper) slideFlipper.getChildAt(1);
+			bcFlip.setInAnimation(alphain);
+			bcFlip.setOutAnimation(alphaout);
+			((ScrollView)(bcFlip.findViewById(R.id.card_front_scroll))).setFillViewport(true);
+			((ScrollView)(bcFlip.findViewById(R.id.card_back_scroll))).setFillViewport(true);
+			ccFlip = (ViewFlipper) slideFlipper.getChildAt(2);
+			ccFlip.setInAnimation(alphain);
+			ccFlip.setOutAnimation(alphaout);
+			((ScrollView)(ccFlip.findViewById(R.id.card_front_scroll))).setFillViewport(true);
+			((ScrollView)(ccFlip.findViewById(R.id.card_back_scroll))).setFillViewport(true);
 			card_pos = savedInstanceState != null ? 
 				savedInstanceState.getInt("savedCardPos"):0;
 			curCard = lesson.getCard(card_pos);
 			showingFront = true;
 			view_pos = 0;
-			setCardToCurrent(ac_flip);
+			setCardToCurrent(acFlip);
 			if (savedInstanceState != null &&
 					!savedInstanceState.getBoolean("savedShowingFront")) {
-				ac_flip.showNext();
+				acFlip.showNext();
 				showingFront = false;
 			}
 		}
@@ -198,11 +205,11 @@ public class CardRunner extends Activity implements OnGestureListener {
 	private ViewFlipper prevView() {
 		switch(view_pos) {
 		case 0:
-			return cc_flip;
+			return ccFlip;
 		case 1:
-			return ac_flip;
+			return acFlip;
 		case 2:
-			return bc_flip;
+			return bcFlip;
 		}
 		return null;
 	}
@@ -210,11 +217,11 @@ public class CardRunner extends Activity implements OnGestureListener {
 	private ViewFlipper currentView() {
 		switch(view_pos) {
 		case 0:
-			return ac_flip;
+			return acFlip;
 		case 1:
-			return bc_flip;
+			return bcFlip;
 		case 2:
-			return cc_flip;
+			return ccFlip;
 		}
 		return null;
 	}
@@ -222,34 +229,32 @@ public class CardRunner extends Activity implements OnGestureListener {
 	private ViewFlipper nextView() {
 		switch(view_pos) {
 		case 0:
-			return bc_flip;
+			return bcFlip;
 		case 1:
-			return cc_flip;
+			return ccFlip;
 		case 2:
-			return ac_flip;
+			return acFlip;
 		}
 		return null;
 	}
 
 	private void setCardToCurrent(ViewFlipper card) {
 		if (switch_front_back) {
-			((TextView)(((LinearLayout)(card.getChildAt(0))).getChildAt(0))).setText(curCard.back);
-			((TextView)(((LinearLayout)(card.getChildAt(1))).getChildAt(0))).setText(curCard.front);
+			((TextView)(card.findViewById(R.id.card_front_text))).setText(curCard.back);
+			((TextView)(card.findViewById(R.id.card_back_text))).setText(curCard.front);
 		} else {
-			((TextView)(((LinearLayout)(card.getChildAt(0))).getChildAt(0))).setText(curCard.front);
-			((TextView)(((LinearLayout)(card.getChildAt(1))).getChildAt(0))).setText(curCard.back);
+			((TextView)(card.findViewById(R.id.card_front_text))).setText(curCard.front);
+			((TextView)(card.findViewById(R.id.card_back_text))).setText(curCard.back);
 		}
-		((TextView)(((LinearLayout)(card.getChildAt(0))).getChildAt(1))).setText(""+(card_pos+1));
+		((TextView)(card.findViewById(R.id.card_front_number))).setText(""+(card_pos+1));
 	}
 
 	private boolean goBackwardsTo(int target) {
 		if (target < 0) return false;
 		card_pos=target;
 		curCard = lesson.getCard(card_pos);
-		ViewFlipper cur = null;
-		if (!showingFront)
-			cur = currentView();
 		ViewFlipper prev = prevView();
+		prev.setDisplayedChild(0);
 		setCardToCurrent(prev);
 		showingFront = true;
 		view_pos--;
@@ -257,8 +262,6 @@ public class CardRunner extends Activity implements OnGestureListener {
 		slideFlipper.setInAnimation(ifl);
 		slideFlipper.setOutAnimation(otr);
 		slideFlipper.showPrevious();
-		if (cur != null)
-			cur.showNext();
 		return true;
 	}
 
@@ -267,10 +270,8 @@ public class CardRunner extends Activity implements OnGestureListener {
 			return false;
 		card_pos = target;
 		curCard = lesson.getCard(card_pos);
-		ViewFlipper cur = null;
-		if (!showingFront)
-			cur = currentView();
 		ViewFlipper next = nextView();
+		next.setDisplayedChild(0);
 		setCardToCurrent(next);
 		showingFront = true;
 		view_pos++;
@@ -278,8 +279,6 @@ public class CardRunner extends Activity implements OnGestureListener {
 		slideFlipper.setInAnimation(ifr);
 		slideFlipper.setOutAnimation(otl);
 		slideFlipper.showNext();
-		if (cur != null)
-			cur.showNext();
 		return true;
 	}
 
@@ -342,6 +341,12 @@ public class CardRunner extends Activity implements OnGestureListener {
 	 *  Touch handlers *
 	 ***************** */
 
+  @Override
+  public boolean dispatchTouchEvent(MotionEvent ev){
+		super.dispatchTouchEvent(ev);
+		return gestureScanner.onTouchEvent(ev);
+	} 
+
 	@Override
   public boolean onTouchEvent(MotionEvent me) {
 		return gestureScanner.onTouchEvent(me);
@@ -352,8 +357,12 @@ public class CardRunner extends Activity implements OnGestureListener {
 		return true;
 	}
 
+	private long lastTap = 0;
 	@Override 
   public boolean onSingleTapUp(MotionEvent e) {
+		if ((System.currentTimeMillis() - lastTap) < 500)
+			return true;
+		lastTap = System.currentTimeMillis();
 		ViewFlipper cur = currentView();
 		if (showingFront) {
 			cur.showNext();
