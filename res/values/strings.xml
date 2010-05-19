@@ -2,4 +2,9 @@
 <resources>
     <string name="app_name">TimedFlashcards</string>
     <string name="cardtext">Card Text</string>
+		<string name="first_card">First Card</string>
+		<string name="goto_card">Go To Card</string>
+		<string name="last_card">Last Card</string>
+		<string name="switch_fb">Switch Front/Back</string>
+		<string name="clear_stat">Restart Game (Clear Status)</string>
 </resources>

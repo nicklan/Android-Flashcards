@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+							android:background="#FFE7E7E7"
+							android:id="@+id/lesson_type_select"
+							android:orientation="vertical" 
+							android:layout_width="fill_parent"
+							android:layout_height="fill_parent">
+	<TextView
+		 android:id="@+id/lesson_name_tv"
+		 android:paddingTop="30px"
+		 android:paddingLeft="10px"
+		 android:layout_width="fill_parent"
+		 android:layout_height="wrap_content"
+		 android:gravity="center"
+		 android:textSize="30sp"
+		 android:textStyle="bold"
+		 android:textColor="#FF000000"
+		 android:text="Lesson Name" />
+	<TextView
+		 android:id="@+id/lesson_desc_tv"
+		 android:paddingTop="30px"
+		 android:paddingLeft="10px"
+		 android:layout_width="fill_parent"
+		 android:layout_height="wrap_content"
+		 android:layout_centerInParent="true"
+		 android:textSize="20sp"
+		 android:textColor="#FF000000"
+		 android:text="Description of the lesson goes here, it might be	quite a bit longer than you think"/>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+								android:id="@+id/lesson_type_select_buttons"
+								android:gravity="center_horizontal|bottom"
+								android:orientation="horizontal"
+								android:layout_weight="2"
+								android:layout_width="fill_parent"
+								android:layout_height="fill_parent">
+		<Button android:id="@+id/review_button"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Review all cards"/>
+		<Button android:id="@+id/memory_button"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Adaptive Memory Game"/>
+	</LinearLayout>
+</LinearLayout>

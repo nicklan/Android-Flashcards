@@ -7,11 +7,18 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 class Lesson implements Serializable {
+	private String name;
+	private String description;
 	private Card[] cards;
 	
-	public Lesson(Card[] _cards) {
+	public Lesson(Card[] _cards, String _name, String _description) {
 		cards = _cards;
+		name = _name;
+		description = _description;
 	}
+
+	public String name() { return name; }
+	public String description() { return description; }
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
@@ -40,6 +47,8 @@ class Lesson implements Serializable {
 
 	private void readObject(ObjectInputStream stream)
 		throws IOException, ClassNotFoundException {
+		name = (String)stream.readObject();
+		description = (String)stream.readObject();
 		int len = stream.readInt();
 		cards = new Card[len];
 		for(int i = 0; i < len;i++)
@@ -47,6 +56,8 @@ class Lesson implements Serializable {
 	}
 	private void writeObject(ObjectOutputStream stream)
 		throws IOException {
+		stream.writeObject(name);
+		stream.writeObject(description);
 		stream.writeInt(cards.length);
 		for(int i = 0; i < cards.length;i++)
 			stream.writeObject(cards[i]);

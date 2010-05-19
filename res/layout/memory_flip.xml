@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
-						 android:id="@+id/card_flipper"
+						 android:id="@+id/memory_flip"
 						 android:background="@drawable/cbg"
 						 android:paddingLeft="30px"
 						 android:paddingRight="10px"
 						 android:layout_width="fill_parent"
 						 android:layout_height="fill_parent">
 	<include layout="@layout/card_front"/>
-	<include layout="@layout/card_back"/>
+	<include layout="@layout/memory_back"/>
 </ViewFlipper>
 

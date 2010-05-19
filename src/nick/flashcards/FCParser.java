@@ -23,6 +23,9 @@ class FCParser extends DefaultHandler {
 		return cardList.toArray(new Card[0]);
 	}
 
+	public String getName() { return nbuf.toString(); }
+	public String getDesc() { return dbuf.toString(); }
+
 	////////////////////////////////////////////////////////////////////
 	// Event handlers.
 	////////////////////////////////////////////////////////////////////
@@ -30,9 +33,13 @@ class FCParser extends DefaultHandler {
 	private boolean inCard = false;
 	private boolean inFront = false;
 	private boolean inBack = false;
+	private boolean inName = false;
+	private boolean inDesc = false;
 
 	private StringBuffer fbuf = new StringBuffer();
 	private StringBuffer bbuf = new StringBuffer();
+	private StringBuffer nbuf = new StringBuffer();
+	private StringBuffer dbuf = new StringBuffer("[no description]");
 
 	public void startDocument ()
 	{}
@@ -76,6 +83,21 @@ class FCParser extends DefaultHandler {
 				System.err.println("Got backside element inside a backside");
 			else
 				inBack = true;
+		}
+		else if (qn.equals("name")) {
+			if (inCard || inFront || inBack) {
+				System.err.println("Got a name inside a card somewhere");
+				return;
+			}
+			inName = true;
+		}
+		else if (qn.equals("description")) {
+			if (inCard || inFront || inBack) {
+				System.err.println("Got a description inside a card somewhere");
+				return;
+			}
+			inDesc = true;
+			dbuf.setLength(0);
 		}
 	}
 
@@ -122,6 +144,18 @@ class FCParser extends DefaultHandler {
 			else
 				inBack = false;
 		}
+		else if (qn.equals("name")) {
+			if (!inName)
+				System.err.println("Got end name not inside a name");
+			else
+				inName = false;
+		}
+		else if (qn.equals("description")) {
+			if (!inDesc)
+				System.err.println("Got end description not inside a description.");
+			else
+				inDesc = false;
+		}
 	}
 
 
@@ -133,6 +167,10 @@ class FCParser extends DefaultHandler {
 			if (inBack)
 				bbuf.append(ch,start,len);
 		}
+		else if (inName) 
+			nbuf.append(ch,start,len);
+		else if (inDesc)
+			dbuf.append(ch,start,len);
 	}
 
 }

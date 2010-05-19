@@ -3,13 +3,19 @@
 							android:orientation="vertical" 
 							android:layout_width="fill_parent"
 							android:layout_height="fill_parent">
-	<TextView 
-		 android:id="@+id/card_back"
-		 android:textColor="#FF000000"
-		 android:layout_width="fill_parent"
-		 android:layout_height="fill_parent"
-		 android:gravity="center"
-		 android:textSize="30sp"
-		 android:textStyle="bold"
-		 android:text="Card Back" />
+	<ScrollView android:id="@+id/card_back_scroll"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:layout_weight="2"
+							android:gravity="center">
+		<TextView
+			 android:id="@+id/card_back"
+			 android:textColor="#FF000000"
+			 android:layout_width="fill_parent"
+			 android:layout_height="fill_parent"
+			 android:gravity="center"
+			 android:textSize="30sp"
+			 android:textStyle="bold"
+			 android:text="Card Back"/>
+	</ScrollView>
 </LinearLayout>

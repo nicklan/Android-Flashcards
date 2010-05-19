@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+							android:id="@+id/memory_back"
+							android:orientation="vertical" 
+							android:layout_width="fill_parent"
+							android:layout_height="fill_parent">
+	<ScrollView android:id="@+id/mem_back_scroll"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:layout_weight="2"
+							android:gravity="center">
+		<TextView
+			 android:id="@+id/mem_back_id"
+			 android:textColor="#FF000000"
+			 android:layout_width="fill_parent"
+			 android:layout_height="wrap_content"
+			 android:layout_weight="2"
+			 android:gravity="center"
+			 android:textSize="30sp"
+			 android:textStyle="bold"
+			 android:text="Card Back"/>
+	</ScrollView>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+								android:id="@+id/mem_back_buttons"
+								android:gravity="center_horizontal|bottom"
+								android:orientation="horizontal"
+								android:layout_width="fill_parent"
+								android:layout_height="wrap_content">
+		<Button android:id="@+id/right_button"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:paddingLeft="10px"
+						android:text="I Got This Right"/>
+		<Button android:id="@+id/wrong_button"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:paddingRight="10px"
+						android:text="I Got This Wrong"/>
+	</LinearLayout>
+</LinearLayout>

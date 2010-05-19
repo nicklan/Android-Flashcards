@@ -4,16 +4,24 @@
 							android:orientation="vertical" 
 							android:layout_width="fill_parent"
 							android:layout_height="fill_parent">
+	<ScrollView android:id="@+id/card_front_scroll"
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:layout_weight="2"
+							android:gravity="center">
+		<TextView
+			 android:id="@+id/card_front_text"
+			 android:textColor="#FF000000"
+			 android:layout_width="wrap_content"
+			 android:layout_height="fill_parent"
+			 android:gravity="center"
+			 android:textSize="30sp"
+			 android:textStyle="bold"
+			 android:layout_weight="2"
+			 android:text="Card Front"/>
+	</ScrollView>
 	<TextView
-		 android:textColor="#FF000000"
-		 android:layout_width="fill_parent"
-		 android:layout_height="wrap_content"
-		 android:layout_weight="2"
-		 android:gravity="center"
-		 android:textSize="30sp"
-		 android:textStyle="bold"
-		 android:text="Card Front" />
-	<TextView
+		 android:id="@+id/card_front_number"
 		 android:textColor="#FF000000"
 		 android:layout_width="fill_parent"
 		 android:layout_height="wrap_content"
