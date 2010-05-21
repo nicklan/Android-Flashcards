@@ -7,4 +7,8 @@
 		<string name="last_card">Last Card</string>
 		<string name="switch_fb">Switch Front/Back</string>
 		<string name="clear_stat">Restart Game (Clear Status)</string>
+		<string name="feedback">Feedback</string>
+		<string name="get_lessons">Download New Lessons</string>
+		<string name="reload">Reload Lesson List</string>
+		<string name="menu_delete">Delete Lesson</string>
 </resources>

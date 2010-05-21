@@ -12,6 +12,11 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.AdapterView;
 import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import java.io.File;
 import java.io.FileReader;
@@ -40,6 +45,10 @@ public class TimedFlashcards extends ListActivity implements Runnable {
 	private SharedPreferences lprefs;
 	private LessonsCont lessons;
 
+	private static final int FEED_BACK_ID = Menu.FIRST;
+	private static final int GET_LESSONS_ID = Menu.FIRST+1;
+	private static final int DELETE_ID = Menu.FIRST+2;
+
 	/** Called when the activity is first created. */
 	@Override
   public void onCreate(Bundle savedInstanceState) {
@@ -49,27 +58,86 @@ public class TimedFlashcards extends ListActivity implements Runnable {
 		lprefs = getSharedPreferences("lessonPrefs",0);
 		lessons = new LessonsCont();
 
-		pd = ProgressDialog.show(this, "", 
-														 "Checking for flashcards.\nPlease wait...", 
-														 true);
-
 		System.setProperty("org.xml.sax.driver","org.xmlpull.v1.sax2.Driver");
-		Thread t = new Thread(this);
-		t.start();
+
+		registerForContextMenu(getListView());
+
+		parseLessons();
 	}
 	
+  @Override
 	public void onListItemClick(ListView parent, View v,int position, long id) {
-		//Intent i = new Intent(this, CardRunner.class);
 		Intent i = new Intent(this, LessonSelect.class);
-
-		System.out.println(lessons.files[position]+"Desc"+":"+lprefs.getString(lessons.files[position]+"Desc","[no description WHY]"));
-
 		i.putExtra("LessonFile", lessons.files[position]);
 		i.putExtra("LessonName", lessons.names[position]);
 		i.putExtra("LessonDesc", lprefs.getString(lessons.files[position]+"Desc","[no description]"));
 		startActivity(i);
 	}
+
+	// Options menu handlers
+	@Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		menu.add(0, FEED_BACK_ID, 3, R.string.feedback);
+		menu.add(0, GET_LESSONS_ID, 3, R.string.get_lessons);
+		return true;
+	}
+
+  @Override
+  public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch(item.getItemId()) {
+		case FEED_BACK_ID: 
+      final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+      emailIntent .setType("plain/text");
+      emailIntent .putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"nick@afternight.org"});
+      emailIntent .putExtra(android.content.Intent.EXTRA_SUBJECT, "TimedFlashcards Feedback");
+      startActivity(Intent.createChooser(emailIntent, "Send Feedback..."));
+			return true;
+		case GET_LESSONS_ID:
+			final Intent glIntent = new Intent(this,DownloadableLessonList.class);
+			startActivityForResult(glIntent,0);
+			return true;
+		}
+		return super.onMenuItemSelected(featureId, item);
+	}
 	
+  @Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+																	ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		menu.add(0, DELETE_ID, 0, R.string.menu_delete);
+	}
+
+  @Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		case DELETE_ID:
+			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+			String fn = lessons.files[(int)info.id];
+			File f = new File("/sdcard/flashcards/"+fn+".csv");
+			if (f.exists())
+				f.delete();
+			f = new File("/sdcard/flashcards/"+fn+".xml");
+			if (f.exists())
+				f.delete();
+			f = new File("/sdcard/flashcards/"+fn+".bin");
+			if (f.exists())
+				f.delete();
+			parseLessons();
+			return true;
+		}
+		return super.onContextItemSelected(item);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode,int resultCode,Intent data) {
+		switch(requestCode) {
+		case 0: // lesson downloader
+			if (resultCode == 1) // downloaded something
+				parseLessons();
+		}
+	}
+
 	// Startup stuff
 
 	private Handler handler = new Handler() {
@@ -130,6 +198,14 @@ public class TimedFlashcards extends ListActivity implements Runnable {
 			}
 		}
 		return new Lesson(cardList.toArray(new Card[0]),name,desc);
+	}
+
+	private void parseLessons() {
+		pd = ProgressDialog.show(this, "", 
+														 "Checking for flashcards.\nPlease wait...", 
+														 true);
+		Thread t = new Thread(this);
+		t.start();
 	}
 
 	public void run() {
