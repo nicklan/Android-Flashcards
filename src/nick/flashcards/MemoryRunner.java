@@ -318,7 +318,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 					public void onClick(View v) {
 						// Got it wrong, schedule soon
 						curWrap.numRight=0;
-						curWrap.target = curCount+1+((int)(Math.random()*7));
+						curWrap.target = curCount+1+((int)(Math.random()*5));
 						curWrap.timestamp = System.currentTimeMillis();
 						queue.add(curWrap);
 						pickCard();
@@ -378,6 +378,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 		Most of the logic goes here.  Dynamically pick a card.
 	 */
 	private void pickCard() {
+		printQ();
 		curWrap = queue.peek();
 		if ((curWrap == null ||
 				 curWrap.target > curCount) &&
@@ -553,6 +554,19 @@ public class MemoryRunner extends Activity implements OnGestureListener {
    
 	@Override 
   public void onShowPress(MotionEvent e) {
+	}
+
+	private void printQ() {
+		System.out.println("CurCount: "+curCount);
+		Iterator<CardWrap> it = queue.iterator();
+		while(it.hasNext()) {
+			CardWrap cw = it.next();
+			Card c = lesson.getCard(cw.card);
+			System.out.println(cw.card+": "+c.front);
+			System.out.println("  right: "+cw.numRight);
+			System.out.println("  targt: "+cw.target);
+			System.out.println("  times: "+cw.timestamp);
+		}
 	}
              
 }
