@@ -1,4 +1,4 @@
-package nick.flashcards;
+package com.androidflashcards;
 
 import android.app.*;
 import android.content.SharedPreferences;

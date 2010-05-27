@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TimedFlashcards</string>
+    <string name="app_name">Android Flashcards</string>
     <string name="cardtext">Card Text</string>
 		<string name="first_card">First Card</string>
 		<string name="goto_card">Go To Card</string>

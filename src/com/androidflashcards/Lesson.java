@@ -1,4 +1,4 @@
-package nick.flashcards;
+package com.androidflashcards;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

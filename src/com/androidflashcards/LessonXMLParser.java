@@ -1,4 +1,4 @@
-package nick.flashcards;
+package com.androidflashcards;
 
 import java.io.FileReader;
 import java.io.File;

@@ -1,4 +1,4 @@
-package nick.flashcards;
+package com.androidflashcards;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -191,9 +191,9 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 					if (!fl.exists())
 						throw new Exception("No file to parse");
 					if (fl.getName().endsWith(".xml"))
-						l = TimedFlashcards.parseXML(fl,extras.getString("Lesson"));
+						l = AndroidFlashcards.parseXML(fl,extras.getString("Lesson"));
 					else
-						l = TimedFlashcards.parseCSV(fl,extras.getString("Lesson"));
+						l = AndroidFlashcards.parseCSV(fl,extras.getString("Lesson"));
 					if (l == null)
 						throw new Exception("Couldn't parse file");
 					FileOutputStream fos = new FileOutputStream(f);

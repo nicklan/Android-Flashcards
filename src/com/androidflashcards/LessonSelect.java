@@ -1,4 +1,4 @@
-package nick.flashcards;
+package com.androidflashcards;
 
 import android.app.Activity;
 import android.content.Intent;
