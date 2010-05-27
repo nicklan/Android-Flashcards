@@ -1,0 +1,41 @@
+<lesson>
+  <name>Instructions</name>
+  <description>How to use Android Flashcards.  Select "Review all cards" below to read the instructions.</description>
+	<card>
+		<frontside>
+			Welcome to Android Flashcards, an application to help you learn.
+
+Touch the screen to flip over the card (try it now).
+		</frontside>
+		<backside>
+			Great!  Now you're looking at the back of the card, which will typically be the answer to whatever the front of the card was asking. 
+
+You can also read all about Android Flashcards at our website: androidflashcards.com
+
+To go to the next card, just slide the card over from right to left (try it now).
+		</backside>
+	</card>
+	<card>
+		<frontside>
+			Awesome!  You're now looking at the second card in the deck.  You can go back to the previous card by sliding from left to right.
+
+Android flashcards doesn't come with any default lessons, but you can easily install lessons from our library.  To do this,	just hit the "Menu" button from the main lesson select screen	and choose "Download new lessons".
+
+Now you can either hit the back button a couple of times to go back to the main lesson select screen and download some lessons,	or touch this card to flip it and learn about the Adaptive Memory Game component of Android Flashcards.
+		</frontside>
+		<backside>
+			Android Flashcards isn't just a flashcard review application. It helps you learn by frequently showing you things you didn't know, and waiting longer to show you things the more you get	them right.
+
+To use this component of Android Flashcards, simply select "Adaptive Memory Game" from the lesson screen.  In this mode, you don't slide the cards left and right, you just tap the card to flip it, and tell the application if you were right or wrong about whatever the card was asking.  If you say you were right, Android Flashcards will wait a bit (but not too long) before asking you again, otherwise the card will be shown again quite soon.  Each time you get a card right it will take even longer to show up again.  The game ends when you've answered every card right five times in a row.
+		</backside>
+	</card>
+	<card>
+		<frontside>
+			It's also easy to create your own flashcards for Android Flashcards.  Please visit androidflashcards.com to find out how to do this.
+		</frontside>
+		<backside>
+			This is the end of the instructions.  You should now hit back a couple of times and download some lessons to get started!
+		</backside>
+	</card>
+</lesson>
+			
