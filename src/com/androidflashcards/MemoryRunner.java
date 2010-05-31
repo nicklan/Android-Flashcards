@@ -149,6 +149,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 	private ViewFlipper slideFlipper;
 
 	private ViewFlipper acFlip,bcFlip, curFlip;
+	private ScrollView acFScroll,acBScroll,bcFScroll,bcBScroll;
 
 	private CardWrap curWrap;
 	private int curCount;
@@ -230,13 +231,17 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 			acFlip = (ViewFlipper) slideFlipper.getChildAt(0);
 			acFlip.setInAnimation(alphain);
 			acFlip.setOutAnimation(alphaout);
-			((ScrollView)(acFlip.findViewById(R.id.card_front_scroll))).setFillViewport(true);
-			((ScrollView)(acFlip.findViewById(R.id.mem_back_scroll))).setFillViewport(true);
+			acFScroll = ((ScrollView)(acFlip.findViewById(R.id.card_front_scroll)));
+			acBScroll = ((ScrollView)(acFlip.findViewById(R.id.mem_back_scroll)));
+			acFScroll.setFillViewport(true);
+			acBScroll.setFillViewport(true);
 			bcFlip = (ViewFlipper) slideFlipper.getChildAt(1);
 			bcFlip.setInAnimation(alphain);
 			bcFlip.setOutAnimation(alphaout);
-			((ScrollView)(bcFlip.findViewById(R.id.card_front_scroll))).setFillViewport(true);
-			((ScrollView)(bcFlip.findViewById(R.id.mem_back_scroll))).setFillViewport(true);
+			bcFScroll = ((ScrollView)(bcFlip.findViewById(R.id.card_front_scroll)));
+			bcBScroll = ((ScrollView)(bcFlip.findViewById(R.id.mem_back_scroll)));
+			bcFScroll.setFillViewport(true);
+			bcBScroll.setFillViewport(true);
 			curFlip = acFlip;
 
 			StateWrapper sw = null;
@@ -375,7 +380,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 	}
 
 	/*
-		Most of the logic goes here.  Dynamically pick a card.
+		Dynamically pick a card.
 	 */
 	private void pickCard() {
 		printQ();
@@ -457,6 +462,13 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 		} else {
 			((TextView)(card.findViewById(R.id.card_front_text))).setText(curCard.front);
 			((TextView)(card.findViewById(R.id.mem_back_id))).setText(curCard.back);
+		}
+		if (card == acFlip) {
+			acFScroll.scrollTo(0,0);
+			acBScroll.scrollTo(0,0);
+		} else {
+			bcFScroll.scrollTo(0,0);
+			bcBScroll.scrollTo(0,0);
 		}
 		((TextView)(card.findViewById(R.id.card_front_number))).setText(""+(curWrap.card+1));
 	}

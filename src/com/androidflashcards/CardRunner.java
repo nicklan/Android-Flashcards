@@ -43,6 +43,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 	private ViewFlipper slideFlipper;
 
 	private ViewFlipper acFlip,bcFlip,ccFlip;
+	private ScrollView acFScroll,acBScroll,bcFScroll,bcBScroll,ccFScroll,ccBScroll;
 
 	private int view_pos,card_pos;
 
@@ -123,18 +124,24 @@ public class CardRunner extends Activity implements OnGestureListener {
 			acFlip = (ViewFlipper) slideFlipper.getChildAt(0);
 			acFlip.setInAnimation(alphain);
 			acFlip.setOutAnimation(alphaout);
-			((ScrollView)(acFlip.findViewById(R.id.card_front_scroll))).setFillViewport(true);
-			((ScrollView)(acFlip.findViewById(R.id.card_back_scroll))).setFillViewport(true);
+			acFScroll = ((ScrollView)(acFlip.findViewById(R.id.card_front_scroll)));
+			acBScroll = ((ScrollView)(acFlip.findViewById(R.id.card_back_scroll)));
+			acFScroll.setFillViewport(true);
+			acBScroll.setFillViewport(true);
 			bcFlip = (ViewFlipper) slideFlipper.getChildAt(1);
 			bcFlip.setInAnimation(alphain);
 			bcFlip.setOutAnimation(alphaout);
-			((ScrollView)(bcFlip.findViewById(R.id.card_front_scroll))).setFillViewport(true);
-			((ScrollView)(bcFlip.findViewById(R.id.card_back_scroll))).setFillViewport(true);
+			bcFScroll = ((ScrollView)(bcFlip.findViewById(R.id.card_front_scroll)));
+			bcBScroll = ((ScrollView)(bcFlip.findViewById(R.id.card_back_scroll)));
+			bcFScroll.setFillViewport(true);
+			bcBScroll.setFillViewport(true);
 			ccFlip = (ViewFlipper) slideFlipper.getChildAt(2);
 			ccFlip.setInAnimation(alphain);
 			ccFlip.setOutAnimation(alphaout);
-			((ScrollView)(ccFlip.findViewById(R.id.card_front_scroll))).setFillViewport(true);
-			((ScrollView)(ccFlip.findViewById(R.id.card_back_scroll))).setFillViewport(true);
+			ccFScroll = ((ScrollView)(ccFlip.findViewById(R.id.card_front_scroll)));
+			ccBScroll = ((ScrollView)(ccFlip.findViewById(R.id.card_back_scroll)));
+			ccFScroll.setFillViewport(true);
+			ccBScroll.setFillViewport(true);
 			card_pos = savedInstanceState != null ? 
 				savedInstanceState.getInt("savedCardPos"):0;
 			curCard = lesson.getCard(card_pos);
@@ -245,6 +252,16 @@ public class CardRunner extends Activity implements OnGestureListener {
 		} else {
 			((TextView)(card.findViewById(R.id.card_front_text))).setText(curCard.front);
 			((TextView)(card.findViewById(R.id.card_back_text))).setText(curCard.back);
+		}
+		if (card == acFlip) {
+			acFScroll.scrollTo(0,0);
+			acBScroll.scrollTo(0,0);
+		} else if (card == bcFlip) {
+			bcFScroll.scrollTo(0,0);
+			bcBScroll.scrollTo(0,0);
+		} else {
+			ccFScroll.scrollTo(0,0);
+			ccBScroll.scrollTo(0,0);
 		}
 		((TextView)(card.findViewById(R.id.card_front_number))).setText(""+(card_pos+1));
 	}
