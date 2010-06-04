@@ -22,6 +22,8 @@ public class LessonSelect extends Activity  {
 		ldesc = extras.getString("LessonDesc");
 		me = this;
 
+		System.out.println("File: "+lfile);
+
 		final TextView nametv = (TextView) findViewById(R.id.lesson_name_tv);
 		nametv.setText(lname);
 		final TextView desctv = (TextView) findViewById(R.id.lesson_desc_tv);

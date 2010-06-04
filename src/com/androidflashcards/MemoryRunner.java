@@ -141,7 +141,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 	}
 
 	private Lesson lesson;
-	private String lname;
+	private String lname,lprefname;
 	private Card curCard;
 	private boolean showingFront,gameDone = false;
 
@@ -172,11 +172,12 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 		Bundle extras = getIntent().getExtras();
 
 		lname = extras.getString("Lesson");
-		SharedPreferences settings = getSharedPreferences(lname+"Prefs", 0);
+		lprefname = lname.replace("/",".")+"Prefs";
+		SharedPreferences settings = getSharedPreferences(lprefname, 0);
 		SharedPreferences lprefs = getSharedPreferences("lessonPrefs",0);
 		switch_front_back = settings.getBoolean("switch_front_back", false);
 
-		File f = new File("/sdcard/flashcards/"+extras.getString("Lesson")+".bin");
+		File f = new File(extras.getString("Lesson"));
 		Lesson l = null;
 		if (f.exists()) {
 			try {
@@ -249,7 +250,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 				sw = (StateWrapper)(savedInstanceState.getSerializable("savedState"));
 			else {
 				try {
-					ObjectInputStream oin = new ObjectInputStream(openFileInput(lname+".ss"));
+					ObjectInputStream oin = new ObjectInputStream(openFileInput(lprefname+".ss"));
 					sw = (StateWrapper)oin.readObject();
 				} catch(FileNotFoundException fn) {
 					sw = null;
@@ -341,15 +342,15 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 	}
 
 	private void saveState() {
-		SharedPreferences settings = getSharedPreferences(lname+"Prefs", 0);
+		SharedPreferences settings = getSharedPreferences(lprefname, 0);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putBoolean("switch_front_back", switch_front_back);
 		editor.commit();
 		if (!gameDone) {
 			StateWrapper sw = new StateWrapper(curCount,showingFront, curWrap,queue,available);
 			try {
-				deleteFile(lname+".ss");
-				ObjectOutputStream out = new ObjectOutputStream(openFileOutput(lname+".ss",0));
+				deleteFile(lprefname+".ss");
+				ObjectOutputStream out = new ObjectOutputStream(openFileOutput(lprefname+".ss",0));
 				out.writeObject(sw);
 				out.close();
 			} catch(Exception e) {
@@ -402,7 +403,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 			alertDialog.setMessage("You got every card correct in the desk 5 times in a row!  This run is now over.  You can start a new run by choosing 'Adaptive Memory Game' again");
 			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						deleteFile(lname+".ss");
+						deleteFile(lprefname+".ss");
 						finish();
 						return;
 					} });
@@ -504,7 +505,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 			setCardToCurrent(curFlip);
 			return true;
 		case CLEAR_STATUS_ID: {
-			deleteFile(lname+".ss");
+			deleteFile(lprefname+".ss");
 			Intent  intent = this.getIntent();
 			startActivity(intent);
 			finish();

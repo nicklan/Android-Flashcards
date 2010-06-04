@@ -35,7 +35,7 @@ import java.util.ArrayList;
 public class CardRunner extends Activity implements OnGestureListener {
 
 	private Lesson lesson;
-	private String lname;
+	private String lname,lprefname;
 	private Card curCard;
 	private boolean showingFront;
 
@@ -65,11 +65,12 @@ public class CardRunner extends Activity implements OnGestureListener {
 		Bundle extras = getIntent().getExtras();
 
 		lname = extras.getString("Lesson");
-		SharedPreferences settings = getSharedPreferences(lname+"Prefs", 0);
+		lprefname = lname.replace("/",".")+"Prefs";
+		SharedPreferences settings = getSharedPreferences(lprefname, 0);
 		SharedPreferences lprefs = getSharedPreferences("lessonPrefs",0);
 		switch_front_back = settings.getBoolean("switch_front_back", false);
 
-		File f = new File("/sdcard/flashcards/"+extras.getString("Lesson")+".bin");
+		File f = new File(extras.getString("Lesson"));
 		Lesson l = null;
 		if (f.exists()) {
 			try {
@@ -167,7 +168,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 	@Override
 	protected void onStop(){
 		super.onStop();
-		SharedPreferences settings = getSharedPreferences(lname+"Prefs", 0);
+		SharedPreferences settings = getSharedPreferences(lprefname, 0);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putBoolean("switch_front_back", switch_front_back);
 		editor.commit();
