@@ -384,15 +384,14 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 		Dynamically pick a card.
 	 */
 	private void pickCard() {
-		printQ();
+		//printQ();
 		curWrap = queue.peek();
 		if ((curWrap == null ||
 				 curWrap.target > curCount) &&
 				(available.size() != 0)) {
 			// queue was empty, or we haven't seen enough cards yet
-			Integer c = (int)(Math.random()*available.size());
-			curWrap = new CardWrap(c.intValue(),0,0,0);
-			available.remove(c);
+			int c = (int)(Math.random()*available.size());
+			curWrap = new CardWrap(available.remove(c).intValue(),0,0,0);
 		}
 		else
 			curWrap = queue.poll();
