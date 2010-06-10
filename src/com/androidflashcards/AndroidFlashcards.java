@@ -35,6 +35,7 @@ import java.io.BufferedReader;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
@@ -336,22 +337,61 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 		boolean first = true;
 		String name = default_name;
 		String desc = "[no description]";
+
+		Pattern noquote_pat = Pattern.compile(",");
+
 		while((line = br.readLine()) != null) {
+			String[] toks = null;
+			line = line.trim();
+			if (line.charAt(0) == '"') { // double quote delimited string
+				int eq1 = line.indexOf('"',1);
+				while (eq1 > 2 && line.charAt(eq1-1) == '\\')  // escaped quote
+					eq1 = line.indexOf('"',(eq1+1));
+				if (eq1 < 3) {
+					System.out.println("Warning, invalid line: "+line);
+					continue;
+				}
+				String front = line.substring(1,eq1);
+				eq1 = line.indexOf(',',eq1+1);
+				if (eq1 <= 0) {
+					System.out.println("Warning, invalid line: "+line);
+					continue;
+				}
+				eq1 = line.indexOf('"',eq1+1);
+				if (eq1 <= 0) {
+					System.out.println("Warning, invalid line: "+line);
+					continue;
+				}
+				int eq2 = line.indexOf('"',eq1+1);
+				if (eq2 < eq1) {
+					System.out.println("Warning, invalid line: "+line);
+					continue;
+				}
+				String back = line.substring(eq1+1,eq2);
+				
+				front = front.replaceAll("\\\\\"","\"");
+				back = back.replaceAll("\\\\\"","\"");
+				
+				toks = new String[2];
+				toks[0] = front;
+				toks[1] = back;
+			} else // this is a bit easier :)
+				toks = noquote_pat.split(line);
 			StringTokenizer stok = new StringTokenizer(line,",");
-			if (stok.countTokens() < 2) {
+			if (toks.length < 2) {
 				System.err.println("Warning, invalid line: "+line);
 				continue;
 			}
-			if (stok.countTokens() > 2) 
+			if (toks.length > 2) 
 				System.err.println("Warning, too many fields on a line, ignoring all but the first two: "+line);
 			if (first) {
-				name = stok.nextToken().trim();
-				desc = stok.nextToken().trim();
+				name = toks[0].trim();
+				desc = toks[1].trim();
 				first = false;
 			} else {
-				String front = stok.nextToken().trim();
+				String front = toks[0].trim();
 				front = front.replaceAll("\\\\n","\n");
-				String back = stok.nextToken().trim();
+				String back = toks[1].trim();
 				back = back.replaceAll("\\\\n","\n");
 				cardList.add(new Card(front,back));
 			}
