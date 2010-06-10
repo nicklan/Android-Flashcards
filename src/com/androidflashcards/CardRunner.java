@@ -19,7 +19,6 @@ import android.view.MenuItem;
 
 import android.view.GestureDetector.OnGestureListener;
 import android.view.GestureDetector; 
-import android.widget.ViewFlipper;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -40,9 +39,9 @@ public class CardRunner extends Activity implements OnGestureListener {
 	private boolean showingFront;
 
 	private GestureDetector gestureScanner; 
-	private ViewFlipper slideFlipper;
+	private FixedFlipper slideFlipper;
 
-	private ViewFlipper acFlip,bcFlip,ccFlip;
+	private FixedFlipper acFlip,bcFlip,ccFlip;
 	private ScrollView acFScroll,acBScroll,bcFScroll,bcBScroll,ccFScroll,ccBScroll;
 
 	private int view_pos,card_pos;
@@ -121,22 +120,22 @@ public class CardRunner extends Activity implements OnGestureListener {
 		if (l != null) {
 			createAnimations();
 			lesson = l;
-			slideFlipper = (ViewFlipper) findViewById(R.id.slide_flipper);
-			acFlip = (ViewFlipper) slideFlipper.getChildAt(0);
+			slideFlipper = (FixedFlipper) findViewById(R.id.slide_flipper);
+			acFlip = (FixedFlipper) slideFlipper.getChildAt(0);
 			acFlip.setInAnimation(alphain);
 			acFlip.setOutAnimation(alphaout);
 			acFScroll = ((ScrollView)(acFlip.findViewById(R.id.card_front_scroll)));
 			acBScroll = ((ScrollView)(acFlip.findViewById(R.id.card_back_scroll)));
 			acFScroll.setFillViewport(true);
 			acBScroll.setFillViewport(true);
-			bcFlip = (ViewFlipper) slideFlipper.getChildAt(1);
+			bcFlip = (FixedFlipper) slideFlipper.getChildAt(1);
 			bcFlip.setInAnimation(alphain);
 			bcFlip.setOutAnimation(alphaout);
 			bcFScroll = ((ScrollView)(bcFlip.findViewById(R.id.card_front_scroll)));
 			bcBScroll = ((ScrollView)(bcFlip.findViewById(R.id.card_back_scroll)));
 			bcFScroll.setFillViewport(true);
 			bcBScroll.setFillViewport(true);
-			ccFlip = (ViewFlipper) slideFlipper.getChildAt(2);
+			ccFlip = (FixedFlipper) slideFlipper.getChildAt(2);
 			ccFlip.setInAnimation(alphain);
 			ccFlip.setOutAnimation(alphaout);
 			ccFScroll = ((ScrollView)(ccFlip.findViewById(R.id.card_front_scroll)));
@@ -210,7 +209,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 		alphaout.setDuration(250);
 	}
 
-	private ViewFlipper prevView() {
+	private FixedFlipper prevView() {
 		switch(view_pos) {
 		case 0:
 			return ccFlip;
@@ -222,7 +221,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 		return null;
 	}
 
-	private ViewFlipper currentView() {
+	private FixedFlipper currentView() {
 		switch(view_pos) {
 		case 0:
 			return acFlip;
@@ -234,7 +233,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 		return null;
 	}
 
-	private ViewFlipper nextView() {
+	private FixedFlipper nextView() {
 		switch(view_pos) {
 		case 0:
 			return bcFlip;
@@ -246,7 +245,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 		return null;
 	}
 
-	private void setCardToCurrent(ViewFlipper card) {
+	private void setCardToCurrent(FixedFlipper card) {
 		if (switch_front_back) {
 			((TextView)(card.findViewById(R.id.card_front_text))).setText(curCard.back);
 			((TextView)(card.findViewById(R.id.card_back_text))).setText(curCard.front);
@@ -271,7 +270,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 		if (target < 0) return false;
 		card_pos=target;
 		curCard = lesson.getCard(card_pos);
-		ViewFlipper prev = prevView();
+		FixedFlipper prev = prevView();
 		prev.setDisplayedChild(0);
 		setCardToCurrent(prev);
 		showingFront = true;
@@ -288,7 +287,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 			return false;
 		card_pos = target;
 		curCard = lesson.getCard(card_pos);
-		ViewFlipper next = nextView();
+		FixedFlipper next = nextView();
 		next.setDisplayedChild(0);
 		setCardToCurrent(next);
 		showingFront = true;
@@ -381,7 +380,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 		if ((System.currentTimeMillis() - lastTap) < 500)
 			return true;
 		lastTap = System.currentTimeMillis();
-		ViewFlipper cur = currentView();
+		FixedFlipper cur = currentView();
 		if (showingFront) {
 			cur.showNext();
 			showingFront = false;

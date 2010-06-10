@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+<com.androidflashcards.FixedFlipper xmlns:android="http://schemas.android.com/apk/res/android"
 						 android:id="@+id/ac_flipper"
 						 android:layout_width="fill_parent"
 						 android:layout_height="fill_parent">
 	<include android:id="@+id/ac_front" layout="@layout/card_front"/>
 	<include android:id="@+id/ac_back"  layout="@layout/card_back"/>
-</ViewFlipper>
+</com.androidflashcards.FixedFlipper>
 

@@ -20,7 +20,6 @@ import android.view.MenuItem;
 
 import android.view.GestureDetector.OnGestureListener;
 import android.view.GestureDetector; 
-import android.widget.ViewFlipper;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -146,9 +145,9 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 	private boolean showingFront,gameDone = false;
 
 	private GestureDetector gestureScanner; 
-	private ViewFlipper slideFlipper;
+	private FixedFlipper slideFlipper;
 
-	private ViewFlipper acFlip,bcFlip, curFlip;
+	private FixedFlipper acFlip,bcFlip, curFlip;
 	private ScrollView acFScroll,acBScroll,bcFScroll,bcBScroll;
 
 	private CardWrap curWrap;
@@ -228,15 +227,15 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 		if (l != null) {
 			createAnimations();
 			lesson = l;
-			slideFlipper = (ViewFlipper) findViewById(R.id.memory_slide_flipper);
-			acFlip = (ViewFlipper) slideFlipper.getChildAt(0);
+			slideFlipper = (FixedFlipper) findViewById(R.id.memory_slide_flipper);
+			acFlip = (FixedFlipper) slideFlipper.getChildAt(0);
 			acFlip.setInAnimation(alphain);
 			acFlip.setOutAnimation(alphaout);
 			acFScroll = ((ScrollView)(acFlip.findViewById(R.id.card_front_scroll)));
 			acBScroll = ((ScrollView)(acFlip.findViewById(R.id.mem_back_scroll)));
 			acFScroll.setFillViewport(true);
 			acBScroll.setFillViewport(true);
-			bcFlip = (ViewFlipper) slideFlipper.getChildAt(1);
+			bcFlip = (FixedFlipper) slideFlipper.getChildAt(1);
 			bcFlip.setInAnimation(alphain);
 			bcFlip.setOutAnimation(alphaout);
 			bcFScroll = ((ScrollView)(bcFlip.findViewById(R.id.card_front_scroll)));
@@ -448,14 +447,14 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 		alphaout.setDuration(250);
 	}
 
-	private ViewFlipper nextView() {
+	private FixedFlipper nextView() {
 		if (curFlip == acFlip)
 			return bcFlip;
 		else
 			return acFlip;
 	}
 
-	private void setCardToCurrent(ViewFlipper card) {
+	private void setCardToCurrent(FixedFlipper card) {
 		if (switch_front_back) {
 			((TextView)(card.findViewById(R.id.card_front_text))).setText(curCard.back);
 			((TextView)(card.findViewById(R.id.mem_back_id))).setText(curCard.front);
@@ -476,7 +475,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 	private boolean goForwardsTo(int target) {
 		if (target >= lesson.cardCount())
 			return false;
-		ViewFlipper next = nextView();
+		FixedFlipper next = nextView();
 		next.setDisplayedChild(1);
 		setCardToCurrent(next);
 		showingFront = false;

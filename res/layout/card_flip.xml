@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+<com.androidflashcards.FixedFlipper xmlns:android="http://schemas.android.com/apk/res/android"
 						 android:id="@+id/card_flipper"
 						 android:background="@drawable/cbg"
 						 android:paddingLeft="30px"
@@ -8,5 +8,5 @@
 						 android:layout_height="fill_parent">
 	<include layout="@layout/card_front"/>
 	<include layout="@layout/card_back"/>
-</ViewFlipper>
+</com.androidflashcards.FixedFlipper>
 
