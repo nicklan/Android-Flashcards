@@ -52,7 +52,8 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 	private static final int GET_LESSONS_ID = Menu.FIRST+1;
 	private static final int DELETE_ID = Menu.FIRST+2;
 
-	private String curDir = "/sdcard/flashcards";
+	private final String rootDir = "/sdcard/flashcards";
+	private String curDir = rootDir;
 
 	/* Called when the activity is first created. */
 	@Override
@@ -177,6 +178,19 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 	}
 
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+    if (keyCode == KeyEvent.KEYCODE_BACK && 
+				!curDir.equals(rootDir)) {
+			File f = new File(curDir);
+			curDir = f.getParent();
+			parseLessons();
+			return true;
+    }
+    return super.onKeyDown(keyCode, event);
+	}
+
+
 	// parsing stuff
 	private Handler handler = new Handler() {
 			@Override
@@ -213,7 +227,7 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 				!cache.exists() ||
 				(cache.lastModified() < dir.lastModified())) {
 			ArrayList<LessonListItem> items = new ArrayList<LessonListItem>();
-			if (!dir.getAbsolutePath().equals("/sdcard/flashcards"))
+			if (!dir.getAbsolutePath().equals(rootDir))
 				items.add(new LessonListItem(dir.getParent(),"..","Go Back","",true));
 			String[] files = dir.list(new FilenameFilter() {
 					public boolean accept(File dir,String name) {
