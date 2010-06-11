@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.util.Log;
 
 import android.view.GestureDetector.OnGestureListener;
 import android.view.GestureDetector; 
@@ -56,7 +57,6 @@ public class CardRunner extends Activity implements OnGestureListener {
 	@Override
   protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		System.out.println(savedInstanceState);
 		setContentView(R.layout.card_runner);
 
 		gestureScanner = new GestureDetector(this); 
@@ -113,7 +113,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("Not found");
+			Log.e(AndroidFlashcards.TAG,"CardRunner cannot start lesson. "+extras.getString("Lesson")+" does not exist");
 			finish();
 		}
 		
@@ -159,7 +159,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		System.out.println("SAVING STATE");
+		Log.i(AndroidFlashcards.TAG,"CardRunner Saving State");
 		outState.putInt("savedCardPos", card_pos);
 		outState.putBoolean("savedShowingFront", showingFront);
 	}

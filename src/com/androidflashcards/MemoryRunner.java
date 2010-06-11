@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.util.Log;
 
 import android.view.GestureDetector.OnGestureListener;
 import android.view.GestureDetector; 
@@ -220,7 +221,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("Not found");
+			Log.e(AndroidFlashcards.TAG,"MemoryRunner cannot start lesson. "+extras.getString("Lesson")+" does not exist");
 			finish();
 		}
 		
@@ -568,15 +569,15 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 	}
 
 	private void printQ() {
-		System.out.println("CurCount: "+curCount);
+		Log.d(AndroidFlashcards.TAG,"CurCount: "+curCount);
 		Iterator<CardWrap> it = queue.iterator();
 		while(it.hasNext()) {
 			CardWrap cw = it.next();
 			Card c = lesson.getCard(cw.card);
-			System.out.println(cw.card+": "+c.front);
-			System.out.println("  right: "+cw.numRight);
-			System.out.println("  targt: "+cw.target);
-			System.out.println("  times: "+cw.timestamp);
+			Log.d(AndroidFlashcards.TAG,cw.card+": "+c.front);
+			Log.d(AndroidFlashcards.TAG,"  right: "+cw.numRight);
+			Log.d(AndroidFlashcards.TAG,"  targt: "+cw.target);
+			Log.d(AndroidFlashcards.TAG,"  times: "+cw.timestamp);
 		}
 	}
              

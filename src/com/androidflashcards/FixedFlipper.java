@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.ViewFlipper;
 import android.util.AttributeSet;
 import android.os.Build;
+import android.util.Log;
 
 /* 
 	 fix for android 2.1/2.2 bug.
@@ -28,7 +29,7 @@ public class FixedFlipper extends ViewFlipper {
 				super.onDetachedFromWindow();
 			}
 			catch (IllegalArgumentException e) {
-				System.out.println("Android project  issue 6191  workaround.");
+				Log.i(AndroidFlashcards.TAG,"Android project issue 6191 workaround.");
 				stopFlipping();
 			}
 		} else {

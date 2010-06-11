@@ -22,6 +22,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileReader;
@@ -54,6 +55,8 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 
 	private final String rootDir = "/sdcard/flashcards";
 	private String curDir = rootDir;
+
+	public static final String TAG = "AndroidFlashcards";
 
 	/* Called when the activity is first created. */
 	@Override
@@ -104,7 +107,6 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 			curDir = l.file;
 			parseLessons();
 		} else {
-			System.out.println("Putting file: "+l.file);
 			i.putExtra("LessonFile", l.file);
 			i.putExtra("LessonName", l.name);
 			i.putExtra("LessonDesc", l.desc);
@@ -362,23 +364,23 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 				while (eq1 > 2 && line.charAt(eq1-1) == '\\')  // escaped quote
 					eq1 = line.indexOf('"',(eq1+1));
 				if (eq1 < 3) {
-					System.out.println("Warning, invalid line: "+line);
+					Log.w(TAG,"Warning, invalid line: "+line);
 					continue;
 				}
 				String front = line.substring(1,eq1);
 				eq1 = line.indexOf(',',eq1+1);
 				if (eq1 <= 0) {
-					System.out.println("Warning, invalid line: "+line);
+					Log.w(TAG,"Warning, invalid line: "+line);
 					continue;
 				}
 				eq1 = line.indexOf('"',eq1+1);
 				if (eq1 <= 0) {
-					System.out.println("Warning, invalid line: "+line);
+					Log.w(TAG,"Warning, invalid line: "+line);
 					continue;
 				}
 				int eq2 = line.indexOf('"',eq1+1);
 				if (eq2 < eq1) {
-					System.out.println("Warning, invalid line: "+line);
+					Log.w(TAG,"Warning, invalid line: "+line);
 					continue;
 				}
 				String back = line.substring(eq1+1,eq2);
@@ -393,11 +395,11 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 				toks = noquote_pat.split(line);
 			StringTokenizer stok = new StringTokenizer(line,",");
 			if (toks.length < 2) {
-				System.err.println("Warning, invalid line: "+line);
+				Log.e(AndroidFlashcards.TAG,"Warning, invalid line: "+line);
 				continue;
 			}
 			if (toks.length > 2) 
-				System.err.println("Warning, too many fields on a line, ignoring all but the first two: "+line);
+				Log.e(AndroidFlashcards.TAG,"Warning, too many fields on a line, ignoring all but the first two: "+line);
 			if (first) {
 				name = toks[0].trim();
 				desc = toks[1].trim();

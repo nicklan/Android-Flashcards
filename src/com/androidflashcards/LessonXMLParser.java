@@ -11,6 +11,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 class LessonXMLParser extends DefaultHandler {
 
 	private ArrayList<DownloadableLessonList.AvailLesson> lessonList = new ArrayList<DownloadableLessonList.AvailLesson>();
@@ -56,17 +58,17 @@ class LessonXMLParser extends DefaultHandler {
 		if (qn.equals("lessons")) {}
 		else if (qn.equals("lesson")) {
 			if (inLesson) 
-				System.err.println("Got lesson element inside a lesson");
+				Log.e(AndroidFlashcards.TAG,"Got lesson element inside a lesson");
 			else
 				inLesson = true;
 		}
 		else if (qn.equals("name")) {
 			if (!inLesson) {
-				System.err.println("Got name element NOT inside a lesson");
+				Log.e(AndroidFlashcards.TAG,"Got name element NOT inside a lesson");
 				return;
 			}
 			if (inName || inDesc || inURL) 
-				System.err.println("Unexpected name element");
+				Log.e(AndroidFlashcards.TAG,"Unexpected name element");
 			else {
 				inName = true;
 				nbuf.setLength(0);
@@ -74,11 +76,11 @@ class LessonXMLParser extends DefaultHandler {
 		}
 		else if (qn.equals("description")) {
 			if (!inLesson) {
-				System.err.println("Got description element NOT inside a lesson");
+				Log.e(AndroidFlashcards.TAG,"Got description element NOT inside a lesson");
 				return;
 			}
 			if (inName || inDesc || inURL)  
-				System.err.println("Unexpected description element");
+				Log.e(AndroidFlashcards.TAG,"Unexpected description element");
 			else {
 				inDesc = true;
 				dbuf.setLength(0);
@@ -86,18 +88,18 @@ class LessonXMLParser extends DefaultHandler {
 		}
 		else if (qn.equals("url")) {
 			if (!inLesson) {
-				System.err.println("Got url element NOT inside a lesson");
+				Log.e(AndroidFlashcards.TAG,"Got url element NOT inside a lesson");
 				return;
 			}
 			if (inName || inDesc || inURL)  
-				System.err.println("Unexpected url element");
+				Log.e(AndroidFlashcards.TAG,"Unexpected url element");
 			else {
 				inURL = true;
 				ubuf.setLength(0);
 			}
 		}
 		else {
-			System.err.println("Unexpected element: "+qn);
+			Log.e(AndroidFlashcards.TAG,"Unexpected element: "+qn);
 		}
 	}
 
@@ -112,11 +114,11 @@ class LessonXMLParser extends DefaultHandler {
 		if (qn.equals("lessons")) {}
 		else if (qn.equals("lesson")) {
 			if (!inLesson) 
-				System.err.println("Ended a lesson element not inside a lesson");
+				Log.e(AndroidFlashcards.TAG,"Ended a lesson element not inside a lesson");
 			else {
 				if (nbuf.length() == 0 ||
 						ubuf.length() == 0) {
-					System.err.println("Got a lesson with no name or url");
+					Log.e(AndroidFlashcards.TAG,"Got a lesson with no name or url");
 				} else {
 					DownloadableLessonList.AvailLesson less = new DownloadableLessonList.AvailLesson();
 					less.name = nbuf.toString().trim();
@@ -132,31 +134,31 @@ class LessonXMLParser extends DefaultHandler {
 		}
 		else if (qn.equals("name")) {
 			if (!inLesson) {
-				System.err.println("Got name end NOT inside a lesson");
+				Log.e(AndroidFlashcards.TAG,"Got name end NOT inside a lesson");
 				return;
 			}
 			if (!inName) 
-				System.err.println("Got end name element NOT inside a name");
+				Log.e(AndroidFlashcards.TAG,"Got end name element NOT inside a name");
 			else
 				inName = false;
 		}
 		else if (qn.equals("description")) {
 			if (!inLesson) {
-				System.err.println("Got end description element NOT inside a lesson");
+				Log.e(AndroidFlashcards.TAG,"Got end description element NOT inside a lesson");
 				return;
 			}
 			if (!inDesc)
-				System.err.println("Got end description NOT inside a description.");
+				Log.e(AndroidFlashcards.TAG,"Got end description NOT inside a description.");
 			else
 				inDesc = false;
 		}
 		else if (qn.equals("url")) {
 			if (!inLesson) {
-				System.err.println("Got end url element NOT inside a lesson");
+				Log.e(AndroidFlashcards.TAG,"Got end url element NOT inside a lesson");
 				return;
 			}
 			if (!inURL) 
-				System.err.println("Got end url element NOT inside a url");
+				Log.e(AndroidFlashcards.TAG,"Got end url element NOT inside a url");
 			else
 				inURL = false;
 		}
