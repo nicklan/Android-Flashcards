@@ -359,6 +359,8 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 		while((line = br.readLine()) != null) {
 			String[] toks = null;
 			line = line.trim();
+			if (line.length() <= 0) // ignore empty lines
+				continue;
 			if (line.charAt(0) == '"') { // double quote delimited string
 				int eq1 = line.indexOf('"',1);
 				while (eq1 > 2 && line.charAt(eq1-1) == '\\')  // escaped quote
