@@ -134,7 +134,7 @@ public class DownloadableLessonList extends ListActivity implements Runnable {
 	// Pull down list of lessons
 	public void run() {
 		try {
-			URL url = new URL("http://nick.afternight.org/tfc/lesson_list.xml");
+			URL url = new URL("http://secretsockssoftware.com/androidflashcards/lessons/lesson_list.xml");
 			URLConnection conn = url.openConnection();
 			XMLReader xr = XMLReaderFactory.createXMLReader();
 			LessonXMLParser lxp = new LessonXMLParser();
