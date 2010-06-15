@@ -35,12 +35,16 @@ import java.io.FileInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.InputSource;
+
+import au.com.bytecode.opencsv.CSVParser;
+
 
 public class AndroidFlashcards extends ListActivity implements Runnable {
 
@@ -347,61 +351,32 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 
 	static protected Lesson parseCSV(File file, String default_name)
 		throws Exception {
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		String line;
 		ArrayList<Card> cardList = new ArrayList<Card>();
+		BufferedReader br = new BufferedReader(new FileReader(file));
+
 		boolean first = true;
 		String name = default_name;
 		String desc = "[no description]";
+		String line;
 
-		Pattern noquote_pat = Pattern.compile(",");
-
-		while((line = br.readLine()) != null) {
-			String[] toks = null;
+    String[] toks;
+		CSVParser parser = new CSVParser();
+    while ((line = br.readLine()) != null) {
 			line = line.trim();
-			if (line.length() <= 0) // ignore empty lines
+			if (line.length() <= 0)
 				continue;
-			if (line.charAt(0) == '"') { // double quote delimited string
-				int eq1 = line.indexOf('"',1);
-				while (eq1 > 2 && line.charAt(eq1-1) == '\\')  // escaped quote
-					eq1 = line.indexOf('"',(eq1+1));
-				if (eq1 < 3) {
-					Log.w(TAG,"Warning, invalid line: "+line);
-					continue;
-				}
-				String front = line.substring(1,eq1);
-				eq1 = line.indexOf(',',eq1+1);
-				if (eq1 <= 0) {
-					Log.w(TAG,"Warning, invalid line: "+line);
-					continue;
-				}
-				eq1 = line.indexOf('"',eq1+1);
-				if (eq1 <= 0) {
-					Log.w(TAG,"Warning, invalid line: "+line);
-					continue;
-				}
-				int eq2 = line.indexOf('"',eq1+1);
-				if (eq2 < eq1) {
-					Log.w(TAG,"Warning, invalid line: "+line);
-					continue;
-				}
-				String back = line.substring(eq1+1,eq2);
-				
-				front = front.replaceAll("\\\\\"","\"");
-				back = back.replaceAll("\\\\\"","\"");
-				
-				toks = new String[2];
-				toks[0] = front;
-				toks[1] = back;
-			} else // this is a bit easier :)
-				toks = noquote_pat.split(line);
-			StringTokenizer stok = new StringTokenizer(line,",");
+			try {
+				toks = parser.parseLine(line);
+			} catch(IOException e) {
+				Log.e(TAG,"Invalid line: "+line+" ("+e.getMessage()+")");
+				continue;
+			}
 			if (toks.length < 2) {
-				Log.e(AndroidFlashcards.TAG,"Warning, invalid line: "+line);
+				Log.e(TAG,"Warning, invalid line, not enough fields: "+line);
 				continue;
 			}
 			if (toks.length > 2) 
-				Log.e(AndroidFlashcards.TAG,"Warning, too many fields on a line, ignoring all but the first two: "+line);
+				Log.e(TAG,"Warning, too many fields on a line, ignoring all but the first two: "+line);
 			if (first) {
 				name = toks[0].trim();
 				desc = toks[1].trim();
@@ -413,7 +388,7 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 				back = back.replaceAll("\\\\n","\n");
 				cardList.add(new Card(front,back));
 			}
-		}
+    }
 		return new Lesson(cardList.toArray(new Card[0]),name,desc);
 	}
 
