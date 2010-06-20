@@ -37,6 +37,9 @@ public class DownloadableLessonList extends ListActivity implements Runnable {
 		String name;
 		String desc;
 		String url;
+		String filter;
+		String target;
+		String encoding;
 
 		public String toString() {
 			return name;
@@ -65,6 +68,9 @@ public class DownloadableLessonList extends ListActivity implements Runnable {
 		i.putExtra("LessonName", l.name);
 		i.putExtra("LessonDesc", l.desc);
 		i.putExtra("LessonUrl", l.url);
+		i.putExtra("LessonFilter", l.filter);
+		i.putExtra("LessonTarget", l.target);
+		i.putExtra("LessonEncoding", l.encoding);
 		startActivityForResult(i,0);
 	}
 

@@ -1,5 +1,7 @@
 package com.androidflashcards;
 
+import com.androidflashcards.filters.LessonFilter;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +12,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 
 import java.io.BufferedInputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.net.URL;
@@ -17,7 +21,7 @@ import java.net.URLConnection;
 
 public class LessonDownload extends Activity  {
 	
-	private String lname,ldesc,lurl;
+	private String lname,ldesc,lurl,lfilt,ltarget,lenc;
 	private LessonDownload me;
 
 	@Override
@@ -28,6 +32,9 @@ public class LessonDownload extends Activity  {
 		lname = extras.getString("LessonName");
 		ldesc = extras.getString("LessonDesc");
 		lurl = extras.getString("LessonUrl");
+		lfilt = extras.getString("LessonFilter");
+		ltarget = extras.getString("LessonTarget");
+		lenc = extras.getString("LessonEncoding");
 		me = this;
 		setResult(0);
 
@@ -47,7 +54,7 @@ public class LessonDownload extends Activity  {
 		dl_button.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					try {
-						doDownload(lurl);
+						doDownload(lurl,lfilt,ltarget,lenc);
 						setResult(1);
 						finish();
 					} catch (Exception e) {
@@ -67,20 +74,41 @@ public class LessonDownload extends Activity  {
 			});
 	}
 
-	private void doDownload(String _url) throws Exception {
+	private void doDownload(String _url, String filtClass, String target, String enc) throws Exception {
 		URL url = new URL(_url);
-		String fdest = url.getFile();
-		fdest = "/sdcard/flashcards/"+fdest.substring(fdest.lastIndexOf('/')+1);
+		String fdest = null;
+		if (target != null) 
+			fdest = "/sdcard/flashcards/"+target;
+		else {
+			fdest = url.getFile();
+			fdest = "/sdcard/flashcards/"+fdest.substring(fdest.lastIndexOf('/')+1);
+		}
 		URLConnection conn = url.openConnection();
-
-		BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
-		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fdest));
-		
-		int i;
-		while ((i = bis.read()) != -1)
-			bos.write(i);
-		bos.close();
-		bis.close();
+		if (filtClass == null) {
+			BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fdest));
+			int i;
+			while ((i = bis.read()) != -1)
+				bos.write(i);
+			bos.close();
+			bis.close();
+		} else {
+			BufferedReader br = new BufferedReader
+				(enc == null?
+				 new InputStreamReader(conn.getInputStream()):
+				 new InputStreamReader(conn.getInputStream(),enc));
+			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fdest));
+			String cline;
+			LessonFilter filt = (LessonFilter)Class.forName(filtClass).newInstance();
+			int lnum = 0;
+			while ((cline = br.readLine())!=null) {
+				String nl = filt.filterLine(cline,++lnum);
+				if (nl != null)
+					bos.write(nl.getBytes());
+			}
+			bos.close();
+			br.close();
+		}
 	}
 
 }

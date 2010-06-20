@@ -33,10 +33,16 @@ class LessonXMLParser extends DefaultHandler {
 	private boolean inName = false;
 	private boolean inDesc = false;
 	private boolean inURL = false;
+	private boolean inFilter = false;
+	private boolean inTarget = false;
+	private boolean inEnc = false;
 
 	private StringBuffer nbuf = new StringBuffer();
 	private StringBuffer dbuf = new StringBuffer();
 	private StringBuffer ubuf = new StringBuffer();
+	private StringBuffer fbuf = new StringBuffer();
+	private StringBuffer tbuf = new StringBuffer();
+	private StringBuffer ebuf = new StringBuffer();
 
 	public void startDocument ()
 	{}
@@ -67,7 +73,7 @@ class LessonXMLParser extends DefaultHandler {
 				Log.e(AndroidFlashcards.TAG,"Got name element NOT inside a lesson");
 				return;
 			}
-			if (inName || inDesc || inURL) 
+			if (inName || inDesc || inURL || inFilter || inTarget || inEnc)
 				Log.e(AndroidFlashcards.TAG,"Unexpected name element");
 			else {
 				inName = true;
@@ -79,7 +85,7 @@ class LessonXMLParser extends DefaultHandler {
 				Log.e(AndroidFlashcards.TAG,"Got description element NOT inside a lesson");
 				return;
 			}
-			if (inName || inDesc || inURL)  
+			if (inName || inDesc || inURL || inFilter || inTarget || inEnc) 
 				Log.e(AndroidFlashcards.TAG,"Unexpected description element");
 			else {
 				inDesc = true;
@@ -91,11 +97,47 @@ class LessonXMLParser extends DefaultHandler {
 				Log.e(AndroidFlashcards.TAG,"Got url element NOT inside a lesson");
 				return;
 			}
-			if (inName || inDesc || inURL)  
+			if (inName || inDesc || inURL || inFilter || inTarget || inEnc) 
 				Log.e(AndroidFlashcards.TAG,"Unexpected url element");
 			else {
 				inURL = true;
 				ubuf.setLength(0);
+			}
+		}
+		else if (qn.equals("filter")) {
+			if (!inLesson) {
+				Log.e(AndroidFlashcards.TAG,"Got filter element NOT inside a lesson");
+				return;
+			}
+			if (inName || inDesc || inURL || inFilter || inTarget || inEnc)
+				Log.e(AndroidFlashcards.TAG,"Unexpected filter element");
+			else {
+				inFilter = true;
+				fbuf.setLength(0);
+			}
+		}
+		else if (qn.equals("target")) {
+			if (!inLesson) {
+				Log.e(AndroidFlashcards.TAG,"Got target element NOT inside a lesson");
+				return;
+			}
+			if (inName || inDesc || inURL || inFilter || inTarget || inEnc)
+				Log.e(AndroidFlashcards.TAG,"Unexpected target element");
+			else {
+				inTarget = true;
+				tbuf.setLength(0);
+			}
+		}
+		else if (qn.equals("encoding")) {
+			if (!inLesson) {
+				Log.e(AndroidFlashcards.TAG,"Got encoding element NOT inside a lesson");
+				return;
+			}
+			if (inName || inDesc || inURL || inFilter || inTarget || inEnc)
+				Log.e(AndroidFlashcards.TAG,"Unexpected encoding element");
+			else {
+				inEnc = true;
+				ebuf.setLength(0);
 			}
 		}
 		else {
@@ -124,6 +166,12 @@ class LessonXMLParser extends DefaultHandler {
 					less.name = nbuf.toString().trim();
 					less.desc = dbuf.toString().trim();
 					less.url = ubuf.toString().trim();
+					if (fbuf.length() != 0) 
+						less.filter = fbuf.toString().trim();
+					if (tbuf.length() != 0) 
+						less.target = tbuf.toString().trim();
+					if (ebuf.length() != 0) 
+						less.encoding = ebuf.toString().trim();
 					lessonList.add(less);
 				}
 			}
@@ -131,6 +179,9 @@ class LessonXMLParser extends DefaultHandler {
 			nbuf.setLength(0);
 			dbuf.setLength(0);
 			ubuf.setLength(0);
+			fbuf.setLength(0);
+			tbuf.setLength(0);
+			ebuf.setLength(0);
 		}
 		else if (qn.equals("name")) {
 			if (!inLesson) {
@@ -162,6 +213,36 @@ class LessonXMLParser extends DefaultHandler {
 			else
 				inURL = false;
 		}
+		else if (qn.equals("filter")) {
+			if (!inLesson) {
+				Log.e(AndroidFlashcards.TAG,"Got end filter element NOT inside a lesson");
+				return;
+			}
+			if (!inFilter) 
+				Log.e(AndroidFlashcards.TAG,"Got end filter element NOT inside a url");
+			else
+				inFilter = false;
+		}
+		else if (qn.equals("target")) {
+			if (!inLesson) {
+				Log.e(AndroidFlashcards.TAG,"Got end target element NOT inside a lesson");
+				return;
+			}
+			if (!inTarget) 
+				Log.e(AndroidFlashcards.TAG,"Got end target element NOT inside a url");
+			else
+				inTarget = false;
+		}
+		else if (qn.equals("encoding")) {
+			if (!inLesson) {
+				Log.e(AndroidFlashcards.TAG,"Got end encoding element NOT inside a lesson");
+				return;
+			}
+			if (!inEnc) 
+				Log.e(AndroidFlashcards.TAG,"Got end encoding element NOT inside a url");
+			else
+				inEnc = false;
+		}
 	}
 
 
@@ -173,6 +254,12 @@ class LessonXMLParser extends DefaultHandler {
 				dbuf.append(ch,start,len);
 			if (inURL)
 				ubuf.append(ch,start,len);
+			if (inFilter)
+				fbuf.append(ch,start,len);
+			if (inTarget)
+				tbuf.append(ch,start,len);
+			if (inEnc)
+				ebuf.append(ch,start,len);
 		}
 	}
 
