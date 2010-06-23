@@ -89,8 +89,16 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 
 	public void run() {
 		File f = new File(curDir);
-		if (!f.exists()) 
-			handler.sendMessage(handler.obtainMessage(1,curDir+" does not exist!"));
+		if (!f.exists())  {
+			if (curDir.equals(rootDir)) {
+				if (f.mkdirs())
+					run();
+				else
+					handler.sendMessage(handler.obtainMessage(1,curDir+" could not create root directory"));
+			}
+			else
+				handler.sendMessage(handler.obtainMessage(1,curDir+" does not exist!"));
+		}
 		else if (!f.isDirectory()) 
 			handler.sendMessage(handler.obtainMessage(1,curDir+" exists, but is not a directory!"));
 		else {
