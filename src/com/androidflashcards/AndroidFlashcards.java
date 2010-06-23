@@ -74,7 +74,6 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 
 		registerForContextMenu(getListView());
 
-		ensureInstructions();
 		parseLessons();
 	}
 
@@ -102,6 +101,7 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 		else if (!f.isDirectory()) 
 			handler.sendMessage(handler.obtainMessage(1,curDir+" exists, but is not a directory!"));
 		else {
+			ensureInstructions();
 			lessons = loadDir(f,false);
 			if (lessons == null)
 				handler.sendMessage(handler.obtainMessage(1,"Sorry, an error occured while loading this directory"));				
