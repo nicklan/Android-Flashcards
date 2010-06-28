@@ -160,7 +160,8 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 	private static final int CLEAR_STATUS_ID = Menu.FIRST+1;
 
 	private PriorityQueue<CardWrap> queue;
-	
+
+	private long lastTap = 0;	
 
 	@Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -283,6 +284,9 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 			View.OnClickListener dslist = new View.OnClickListener() {
 					public void onClick(View v) { 
 						// Don't show this card anymore
+						if ((System.currentTimeMillis() - lastTap) < 500)
+							return;
+						lastTap = System.currentTimeMillis();
 						pickCard();
 						if (curWrap != null)
 							goForwardsTo(curWrap.card);
@@ -291,6 +295,9 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 			View.OnClickListener rlist = new View.OnClickListener() {
 					public void onClick(View v) { 
 						// Got it right, schedule further in future
+						if ((System.currentTimeMillis() - lastTap) < 500)
+							return;
+						lastTap = System.currentTimeMillis();
 						int nt = curCount;
 						curWrap.numRight++;
 						if (curWrap.numRight < 6) {
@@ -323,6 +330,9 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 			View.OnClickListener wlist = new View.OnClickListener() {
 					public void onClick(View v) {
 						// Got it wrong, schedule soon
+						if ((System.currentTimeMillis() - lastTap) < 500)
+							return;
+						lastTap = System.currentTimeMillis();
 						curWrap.numRight=0;
 						curWrap.target = curCount+1+((int)(Math.random()*5));
 						curWrap.timestamp = System.currentTimeMillis();
@@ -477,7 +487,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 		if (target >= lesson.cardCount())
 			return false;
 		FixedFlipper next = nextView();
-		next.setDisplayedChild(1);
+		next.setDisplayedChild(0);
 		setCardToCurrent(next);
 		showingFront = false;
 		slideFlipper.setInAnimation(ifr);
@@ -534,7 +544,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 		return true;
 	}
 
-	private long lastTap = 0;
+
 	@Override
   public boolean onSingleTapUp(MotionEvent e) {
 		if ((System.currentTimeMillis() - lastTap) < 500)
