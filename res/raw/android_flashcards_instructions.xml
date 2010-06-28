@@ -10,7 +10,8 @@ Touch the screen to flip over the card (try it now).
 		<backside>
 			Great!  Now you're looking at the back of the card, which will typically be the answer to whatever the front of the card was asking. 
 
-You can also read all about Android Flashcards at our website: androidflashcards.com
+You can also read all about Android Flashcards at our website: 
+http://secretsockssoftware.com
 
 To go to the next card, just slide the card over from right to left (try it now).
 		</backside>
@@ -27,6 +28,8 @@ Now you can either hit the back button a couple of times to go back to the main 
 			Android Flashcards isn't just a flashcard review application. It helps you learn by frequently showing you things you didn't know, and waiting longer to show you things the more you get	them right.
 
 To use this component of Android Flashcards, simply select "Adaptive Memory Game" from the lesson screen.  In this mode, you don't slide the cards left and right, you just tap the card to flip it, and tell the application if you were right or wrong about whatever the card was asking.  If you say you were right, Android Flashcards will wait a bit (but not too long) before asking you again, otherwise the card will be shown again quite soon.  Each time you get a card right it will take even longer to show up again.  The game ends when you've answered every card right five times in a row.
+
+There's one more card about creating your own lessons.  You can slide this card over to get to it.
 		</backside>
 	</card>
 	<card>
