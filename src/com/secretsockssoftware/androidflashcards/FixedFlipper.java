@@ -1,4 +1,4 @@
-package com.androidflashcards;
+package com.secretsockssoftware.androidflashcards;
 
 import android.content.Context;
 import android.widget.ViewFlipper;

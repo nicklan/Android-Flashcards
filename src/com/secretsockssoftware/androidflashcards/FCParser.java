@@ -1,4 +1,4 @@
-package com.androidflashcards;
+package com.secretsockssoftware.androidflashcards;
 
 import java.io.FileReader;
 import java.io.File;

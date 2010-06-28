@@ -1,4 +1,4 @@
-package com.androidflashcards.filters;
+package com.secretsockssoftware.androidflashcards.filters;
 
 import au.com.bytecode.opencsv.CSVParser;
 import au.com.bytecode.opencsv.CSVWriter;

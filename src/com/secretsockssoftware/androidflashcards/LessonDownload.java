@@ -1,6 +1,6 @@
-package com.androidflashcards;
+package com.secretsockssoftware.androidflashcards;
 
-import com.androidflashcards.filters.LessonFilter;
+import com.secretsockssoftware.androidflashcards.filters.LessonFilter;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

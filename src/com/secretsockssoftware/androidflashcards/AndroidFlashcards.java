@@ -1,4 +1,4 @@
-package com.androidflashcards;
+package com.secretsockssoftware.androidflashcards;
 
 import android.app.*;
 import android.content.SharedPreferences;

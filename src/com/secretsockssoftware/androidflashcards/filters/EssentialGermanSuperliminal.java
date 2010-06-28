@@ -1,4 +1,4 @@
-package com.androidflashcards.filters;
+package com.secretsockssoftware.androidflashcards.filters;
 
 public class EssentialGermanSuperliminal extends CSVColFilter {
 
