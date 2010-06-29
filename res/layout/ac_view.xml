@@ -17,11 +17,11 @@
 * You should have received a copy of the GNU General Public License
 * along with "AndroidFlashcards". If not, see <http://www.gnu.org/licenses/>.
 -->
-<com.androidflashcards.FixedFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+<com.secretsockssoftware.androidflashcards.FixedFlipper xmlns:android="http://schemas.android.com/apk/res/android"
 						 android:id="@+id/ac_flipper"
 						 android:layout_width="fill_parent"
 						 android:layout_height="fill_parent">
 	<include android:id="@+id/ac_front" layout="@layout/card_front"/>
 	<include android:id="@+id/ac_back"  layout="@layout/card_back"/>
-</com.androidflashcards.FixedFlipper>
+</com.secretsockssoftware.androidflashcards.FixedFlipper>
 
