@@ -187,14 +187,10 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 		switch(item.getItemId()) {
 		case DELETE_ID:
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-			String fn = lessons[(int)info.id].file;
-			File f = new File(sdDir+File.separator+"flashcards/"+fn+".csv");
+			File f = new File(lessons[(int)info.id].file);
 			if (f.exists())
 				f.delete();
-			f = new File(sdDir+File.separator+"flashcards/"+fn+".xml");
-			if (f.exists())
-				f.delete();
-			f = new File(sdDir+File.separator+"flashcards/"+fn+".bin");
+			f = new File(lessons[(int)info.id].source);
 			if (f.exists())
 				f.delete();
 			parseLessons();
@@ -263,7 +259,7 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 				(cache.lastModified() < dir.lastModified())) {
 			ArrayList<LessonListItem> items = new ArrayList<LessonListItem>();
 			if (!dir.getAbsolutePath().equals(rootDir))
-				items.add(new LessonListItem(dir.getParent(),"..","Go Back","",true));
+				items.add(new LessonListItem(dir.getParent(),null,"..","Go Back","",true));
 			String[] files = dir.list(new FilenameFilter() {
 					public boolean accept(File dir,String name) {
 						File f = new File(dir,name);
@@ -279,6 +275,7 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 				File curF = new File(dir.getAbsolutePath()+File.separator+files[i]);
 				if (curF.isDirectory()) 
 					items.add(new LessonListItem(curF.getAbsolutePath(),
+																			 null,
 																			 files[i],
 																			 "Directory",
 																			 "",true));
@@ -304,6 +301,7 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 					else {
 						items.add(new LessonListItem
 											(bf.getAbsolutePath(),
+											 curF.getAbsolutePath(),
 											 lprefs.getString(fbase+"Name","[No Name]"),
 											 lprefs.getString(fbase+"Desc","[No Description]"),
 											 lprefs.getString(fbase+"Count","[No Count]"),false));
@@ -352,6 +350,7 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 				oos.writeObject(l);
 				oos.close();
 				lli = new LessonListItem(bf.getAbsolutePath(),
+																 f.getAbsolutePath(),
 																 l.name(),
 																 l.description(),
 																 "Cards: "+l.cardCount(),false);
