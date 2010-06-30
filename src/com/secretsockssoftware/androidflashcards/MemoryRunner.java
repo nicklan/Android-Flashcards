@@ -230,7 +230,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 					AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 					alertDialog.setTitle("Error");
 					alertDialog.setMessage("Sorry, but an error occured trying to load lesson file.");
-					alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+					alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,"OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								finish();
 								return;
@@ -429,7 +429,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 			AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 			alertDialog.setTitle("Congratulations!");
 			alertDialog.setMessage("You got every card correct in the desk 5 times in a row!  This run is now over.  You can start a new run by choosing 'Adaptive Memory Game' again");
-			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						deleteFile(lprefname+".ss");
 						finish();

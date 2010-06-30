@@ -265,7 +265,7 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 					AlertDialog alertDialog = new AlertDialog.Builder(me).create();
 					alertDialog.setTitle("Error");
 					alertDialog.setMessage("Sorry, but an error occured trying to read the directory:\n\n"+msg.obj);
-					alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+					alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,"OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								setResult(0);
 								finish();

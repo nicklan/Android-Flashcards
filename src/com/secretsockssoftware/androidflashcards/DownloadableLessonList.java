@@ -137,7 +137,7 @@ public class DownloadableLessonList extends ListActivity implements Runnable {
 					AlertDialog alertDialog = new AlertDialog.Builder(me).create();
 					alertDialog.setTitle("Error");
 					alertDialog.setMessage("Sorry, but an error occured trying to download the list of available lessons:\n"+msg.obj);
-					alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+					alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,"OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								finish();
 								return;

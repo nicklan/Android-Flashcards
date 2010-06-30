@@ -104,7 +104,7 @@ public class LessonDownload extends Activity implements Runnable {
 					AlertDialog alertDialog = new AlertDialog.Builder(me).create();
 					alertDialog.setTitle("Success");
 					alertDialog.setMessage("Lesson downloaded successfully.\n\nPress OK to go back to the list of available lessons.\n\n(You can press the back button from the list to go back to the lesson select screen)");
-					alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+					alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,"OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								setResult(1);
 								finish();
@@ -115,7 +115,7 @@ public class LessonDownload extends Activity implements Runnable {
 					AlertDialog alertDialog = new AlertDialog.Builder(me).create();
 					alertDialog.setTitle("Error");
 					alertDialog.setMessage("Sorry, but an error occured trying to download this lesson:\n\n"+msg.obj);
-					alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+					alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,"OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								setResult(0);
 								finish();

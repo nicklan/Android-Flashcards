@@ -121,7 +121,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 					AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 					alertDialog.setTitle("Error");
 					alertDialog.setMessage("Sorry, but an error occured trying to load lesson file.");
-					alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+					alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,"OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								finish();
 								return;
