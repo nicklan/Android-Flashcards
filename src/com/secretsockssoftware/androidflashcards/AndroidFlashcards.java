@@ -181,19 +181,49 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.add(0, DELETE_ID, 0, R.string.menu_delete);
 	}
+	
+	static private boolean deleteDir(File dir) {
+    if (dir.exists()) {
+      File[] files = dir.listFiles();
+      for (int i=0; i<files.length; i++)
+				if (files[i].isDirectory()) 
+					deleteDir(files[i]);
+				else 
+					files[i].delete();
+    }
+    return dir.delete();
+  }
 
   @Override
 	public boolean onContextItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 		case DELETE_ID:
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-			File f = new File(lessons[(int)info.id].file);
-			if (f.exists())
-				f.delete();
-			f = new File(lessons[(int)info.id].source);
-			if (f.exists())
-				f.delete();
-			parseLessons();
+			final LessonListItem lesson_item = lessons[(int)info.id];
+			AlertDialog alertDialog = new AlertDialog.Builder(me).create();
+			alertDialog.setTitle("Confirm Delete");
+			if (lesson_item.isDir)
+				alertDialog.setMessage("Are you sure you want to delete:\n"+lesson_item.name+"\n\nAll lessons in the directory will be deleted");				
+			else
+				alertDialog.setMessage("Are you sure you want to delete the lesson:\n"+lesson_item.name);
+			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,"OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						File f = new File(lesson_item.file);
+						if (lesson_item.isDir) {
+							deleteDir(f);
+						} else {
+							if (f.exists())
+								f.delete();
+							f = new File(lesson_item.source);
+							if (f.exists())
+								f.delete();
+						}
+						parseLessons();
+					}});
+			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,"Cancel", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+					}});
+			alertDialog.show();
 			return true;
 		}
 		return super.onContextItemSelected(item);
