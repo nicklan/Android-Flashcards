@@ -95,7 +95,7 @@ class FCParser extends DefaultHandler {
 			else
 				inFront = true;
 		}
-		else if (qn.equals("backside")) {
+		else if (qn.equals("backside") || qn.equals("reverseside")) {
 			if (!inCard) {
 				Log.e(AndroidFlashcards.TAG,"Got backside element NOT inside a card");
 				return;
@@ -155,7 +155,7 @@ class FCParser extends DefaultHandler {
 			else
 				inFront = false;
 		}
-		else if (qn.equals("backside")) {
+		else if (qn.equals("backside") || qn.equals("reverseside")) {
 			if (!inCard) {
 				Log.e(AndroidFlashcards.TAG,"Got backside element NOT inside a card");
 				return;
