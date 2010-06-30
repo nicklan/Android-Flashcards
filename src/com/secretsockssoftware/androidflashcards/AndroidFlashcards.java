@@ -256,12 +256,13 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 	private Handler handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
-				pd.dismiss();
 				if (msg.what == 0) {
+					pd.dismiss();
 					LessonAdapter ad = new LessonAdapter(lessons);
 					setListAdapter(ad);
 					getListView().setTextFilterEnabled(true);
 				} else if (msg.what == 1) {
+					pd.dismiss();
 					AlertDialog alertDialog = new AlertDialog.Builder(me).create();
 					alertDialog.setTitle("Error");
 					alertDialog.setMessage("Sorry, but an error occured trying to read the directory:\n\n"+msg.obj);
@@ -272,6 +273,8 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 								return;
 							} });
 					alertDialog.show();
+				} else if (msg.what == 2) {
+					pd.setMessage((String)msg.obj);
 				}
 			}
 		};
@@ -369,6 +372,7 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 	private LessonListItem parseLesson(File f,File bf,String fbase) {
 		Lesson l = null;
 		LessonListItem lli = null;
+		handler.sendMessage(handler.obtainMessage(2,"Parsing: "+fbase));
 		try {
 			FileOutputStream fos = new FileOutputStream(bf);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
