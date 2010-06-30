@@ -22,6 +22,7 @@ package com.secretsockssoftware.androidflashcards;
 import android.app.*;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.*;
@@ -76,7 +77,8 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 	private static final int GET_LESSONS_ID = Menu.FIRST+1;
 	private static final int DELETE_ID = Menu.FIRST+2;
 
-	private final String rootDir = "/sdcard/flashcards";
+	public static final String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+	private final String rootDir = sdDir+File.separator+"flashcards";
 	private String curDir = rootDir;
 
 	public static final String TAG = "AndroidFlashcards";
@@ -112,7 +114,7 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 				if (f.mkdirs())
 					run();
 				else
-					handler.sendMessage(handler.obtainMessage(1,curDir+" could not create root directory"));
+					handler.sendMessage(handler.obtainMessage(1,"could not create root directory: "+curDir));
 			}
 			else
 				handler.sendMessage(handler.obtainMessage(1,curDir+" does not exist!"));
@@ -186,13 +188,13 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 		case DELETE_ID:
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 			String fn = lessons[(int)info.id].file;
-			File f = new File("/sdcard/flashcards/"+fn+".csv");
+			File f = new File(sdDir+File.separator+"flashcards/"+fn+".csv");
 			if (f.exists())
 				f.delete();
-			f = new File("/sdcard/flashcards/"+fn+".xml");
+			f = new File(sdDir+File.separator+"flashcards/"+fn+".xml");
 			if (f.exists())
 				f.delete();
-			f = new File("/sdcard/flashcards/"+fn+".bin");
+			f = new File(sdDir+File.separator+"flashcards/"+fn+".bin");
 			if (f.exists())
 				f.delete();
 			parseLessons();
@@ -420,7 +422,7 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 	}
 
 	private void ensureInstructions() {
-		File f = new File("/sdcard/flashcards/android_flashcards_instructions.xml");
+		File f = new File(sdDir+File.separator+"flashcards/android_flashcards_instructions.xml");
 		if (!f.exists()) {
 			try {
 				BufferedInputStream bis = new BufferedInputStream(getResources().openRawResource(R.raw.android_flashcards_instructions));

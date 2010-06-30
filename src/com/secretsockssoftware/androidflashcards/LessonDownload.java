@@ -37,6 +37,7 @@ import java.io.BufferedInputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -129,10 +130,10 @@ public class LessonDownload extends Activity implements Runnable {
 		URL url = new URL(_url);
 		String fdest = null;
 		if (target != null) 
-			fdest = "/sdcard/flashcards/"+target;
+			fdest = AndroidFlashcards.sdDir+File.separator+"flashcards/"+target;
 		else {
 			fdest = url.getFile();
-			fdest = "/sdcard/flashcards/"+fdest.substring(fdest.lastIndexOf('/')+1);
+			fdest = AndroidFlashcards.sdDir+File.separator+"flashcards/"+fdest.substring(fdest.lastIndexOf('/')+1);
 		}
 		URLConnection conn = url.openConnection();
 		if (filtClass == null) {

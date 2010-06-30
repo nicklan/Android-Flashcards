@@ -207,9 +207,9 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 			} catch (java.io.InvalidClassException e) {
 				// try to reparse first
 				try {
-					File fl = new File("/sdcard/flashcards/"+extras.getString("Lesson")+".xml");
+					File fl = new File(AndroidFlashcards.sdDir+File.separator+"flashcards/"+extras.getString("Lesson")+".xml");
 					if (!fl.exists())
-						fl = new File("/sdcard/flashcards/"+extras.getString("Lesson")+".csv");
+						fl = new File(AndroidFlashcards.sdDir+File.separator+"flashcards/"+extras.getString("Lesson")+".csv");
 					if (!fl.exists())
 						throw new Exception("No file to parse");
 					if (fl.getName().endsWith(".xml"))
