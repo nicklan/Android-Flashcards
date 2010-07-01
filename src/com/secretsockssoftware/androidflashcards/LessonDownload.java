@@ -140,8 +140,13 @@ public class LessonDownload extends Activity implements Runnable {
 			BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fdest));
 			int i;
-			while ((i = bis.read()) != -1)
+			boolean wrote = false;
+			while ((i = bis.read()) != -1) {
 				bos.write(i);
+				wrote = true;
+			}
+			if (!wrote) 
+				throw new Exception("Download interrupted, please try again");
 			bos.close();
 			bis.close();
 		} else {
@@ -153,11 +158,16 @@ public class LessonDownload extends Activity implements Runnable {
 			String cline;
 			LessonFilter filt = (LessonFilter)Class.forName(filtClass).newInstance();
 			int lnum = 0;
+			boolean wrote = false;
 			while ((cline = br.readLine())!=null) {
 				String nl = filt.filterLine(cline,++lnum);
-				if (nl != null)
+				if (nl != null) {
 					bos.write(nl.getBytes());
+					wrote = true;
+				}
 			}
+			if (!wrote) 
+				throw new Exception("Download interrupted, please try again");
 			bos.close();
 			br.close();
 		}
