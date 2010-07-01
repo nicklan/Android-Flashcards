@@ -28,6 +28,7 @@
 							android:layout_weight="2"
 							android:gravity="center">
 		<TextView
+			 android:autoLink="web|email"
 			 android:id="@+id/mem_back_id"
 			 android:textColor="#FF000000"
 			 android:layout_width="fill_parent"

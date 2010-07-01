@@ -163,7 +163,7 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 		case FEED_BACK_ID: 
       final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
       emailIntent .setType("plain/text");
-      emailIntent .putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"nick@afternight.org"});
+      emailIntent .putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"androidflashcards@secretsockssoftware.com"});
       emailIntent .putExtra(android.content.Intent.EXTRA_SUBJECT, "Android Flashcards Feedback");
       startActivity(Intent.createChooser(emailIntent, "Send Feedback..."));
 			return true;

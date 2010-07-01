@@ -29,7 +29,7 @@ Touch the screen to flip over the card (try it now).
 			Great!  Now you're looking at the back of the card, which will typically be the answer to whatever the front of the card was asking. 
 
 You can also read all about Android Flashcards at our website: 
-http://secretsockssoftware.com
+http://secretsockssoftware.com/androidflashcards
 
 To go to the next card, just slide the card over from right to left (try it now).
 		</backside>
@@ -39,6 +39,8 @@ To go to the next card, just slide the card over from right to left (try it now)
 			Awesome!  You're now looking at the second card in the deck.  You can go back to the previous card by sliding from left to right.
 
 Android flashcards doesn't come with any default lessons, but you can easily install lessons from our library.  To do this,	just hit the "Menu" button from the main lesson select screen	and choose "Download new lessons".
+
+You can also hit the "Menu" button while reviewing cards to jump to a specific card or reverse the front and back of the cards in the deck.
 
 Now you can either hit the back button a couple of times to go back to the main lesson select screen and download some lessons,	or touch this card to flip it and learn about the Adaptive Memory Game component of Android Flashcards.
 		</frontside>
@@ -52,7 +54,7 @@ There's one more card about creating your own lessons.  You can slide this card 
 	</card>
 	<card>
 		<frontside>
-			It's also easy to create your own flashcards for Android Flashcards.  Please visit androidflashcards.com to find out how to do this.
+			It's easy to create your own flashcards for Android Flashcards.  You can visit http://secretsockssoftware.com/androidflashcards to find out how to do this.
 		</frontside>
 		<backside>
 			This is the end of the instructions.  You should now hit back a couple of times and download some lessons to get started!
