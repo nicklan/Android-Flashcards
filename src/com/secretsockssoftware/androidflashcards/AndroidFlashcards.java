@@ -256,12 +256,15 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 	private Handler handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
-				if (msg.what == 0) {
+				switch (msg.what) {
+				case 0: {
 					pd.dismiss();
 					LessonAdapter ad = new LessonAdapter(lessons);
 					setListAdapter(ad);
 					getListView().setTextFilterEnabled(true);
-				} else if (msg.what == 1) {
+					break;
+				}
+				case 1: {
 					pd.dismiss();
 					AlertDialog alertDialog = new AlertDialog.Builder(me).create();
 					alertDialog.setTitle("Error");
@@ -273,8 +276,25 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 								return;
 							} });
 					alertDialog.show();
-				} else if (msg.what == 2) {
+					break;
+				} 
+				case 2: 
 					pd.setMessage((String)msg.obj);
+					break;
+				case 3: {
+					AlertDialog alertDialog = new AlertDialog.Builder(me).create();
+					alertDialog.setTitle("Empty File");
+					alertDialog.setMessage("Sorry, but "
+																 +msg.obj+
+																 " is an empty file and will be removed.\n\nThis may be due to a download error, you can try downloading the lesson again.");
+					alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,"OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+							}});	
+					alertDialog.show();
+					break;
+				}
+				default:
+					Log.e(TAG,"Invalid message recieved by handler: "+msg.what);
 				}
 			}
 		};
@@ -373,6 +393,12 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 		Lesson l = null;
 		LessonListItem lli = null;
 		handler.sendMessage(handler.obtainMessage(2,"Parsing: "+fbase));
+		if (f.length() <= 0) {
+			// clean up any empty files	
+			if (f.delete())
+				handler.sendMessage(handler.obtainMessage(3,f.getName()));
+			return null;
+		}
 		try {
 			FileOutputStream fos = new FileOutputStream(bf);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
