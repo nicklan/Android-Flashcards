@@ -297,8 +297,6 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 			}
 
 			setCardToCurrent(acFlip);
-			if (!showingFront)
-				acFlip.showNext();
 
 			View.OnClickListener dslist = new View.OnClickListener() {
 					public void onClick(View v) { 
