@@ -25,7 +25,6 @@
 						android:layout_weight="2"
 						android:gravity="center">
 	<TextView
-		 android:autoLink="web|email"
 		 android:id="@+id/card_back_text"
 		 android:textColor="#FF000000"
 		 android:layout_width="fill_parent"

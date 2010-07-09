@@ -38,8 +38,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.util.Log;
 
-import android.view.GestureDetector.OnGestureListener;
-import android.view.GestureDetector; 
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -59,7 +57,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 
-public class MemoryRunner extends Activity implements OnGestureListener {
+public class MemoryRunner extends Activity {
 
 	private class CardWrap implements Comparable,Serializable {
 		int card;
@@ -164,7 +162,6 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 	private Card curCard;
 	private boolean showingFront,gameDone = false;
 
-	private GestureDetector gestureScanner; 
 	private FixedFlipper slideFlipper;
 
 	private FixedFlipper acFlip,bcFlip, curFlip;
@@ -187,7 +184,6 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.memory_runner);
 
-		gestureScanner = new GestureDetector(this); 
 
 		Bundle extras = getIntent().getExtras();
 
@@ -247,6 +243,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 		
 		if (l != null) {
 			createAnimations();
+			ScrollListener listener = new ScrollListener();
 			lesson = l;
 			slideFlipper = (FixedFlipper) findViewById(R.id.memory_slide_flipper);
 			acFlip = (FixedFlipper) slideFlipper.getChildAt(0);
@@ -255,14 +252,18 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 			acFScroll = ((ScrollView)(acFlip.findViewById(R.id.card_front_scroll)));
 			acBScroll = ((ScrollView)(acFlip.findViewById(R.id.mem_back_scroll)));
 			acFScroll.setFillViewport(true);
+			acFScroll.setOnTouchListener(listener);
 			acBScroll.setFillViewport(true);
+			acBScroll.setOnTouchListener(listener);
 			bcFlip = (FixedFlipper) slideFlipper.getChildAt(1);
 			bcFlip.setInAnimation(alphain);
 			bcFlip.setOutAnimation(alphaout);
 			bcFScroll = ((ScrollView)(bcFlip.findViewById(R.id.card_front_scroll)));
 			bcBScroll = ((ScrollView)(bcFlip.findViewById(R.id.mem_back_scroll)));
 			bcFScroll.setFillViewport(true);
+			bcFScroll.setOnTouchListener(listener);
 			bcBScroll.setFillViewport(true);
+			bcBScroll.setOnTouchListener(listener);
 			curFlip = acFlip;
 
 			StateWrapper sw = null;
@@ -301,6 +302,7 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 			View.OnClickListener dslist = new View.OnClickListener() {
 					public void onClick(View v) { 
 						// Don't show this card anymore
+						System.out.println("IJFIOJFE");
 						if ((System.currentTimeMillis() - lastTap) < 500)
 							return;
 						lastTap = System.currentTimeMillis();
@@ -541,58 +543,34 @@ public class MemoryRunner extends Activity implements OnGestureListener {
 		return super.onMenuItemSelected(featureId, item);
 	}
 
-	/* *************** *
-	 *  Touch handlers *
-	 ***************** */
-
-  @Override
-  public boolean dispatchTouchEvent(MotionEvent ev){
-		super.dispatchTouchEvent(ev);
-		return gestureScanner.onTouchEvent(ev);
-	} 
-
-	@Override
-  public boolean onTouchEvent(MotionEvent me) {
-		return gestureScanner.onTouchEvent(me);
-	}
-
-  @Override
-  public boolean onDown(MotionEvent e) {
-		return true;
-	}
-
-
-	@Override
-  public boolean onSingleTapUp(MotionEvent e) {
-		if ((System.currentTimeMillis() - lastTap) < 500)
-			return true;
-		lastTap = System.currentTimeMillis();
-		if (showingFront) {
-			curFlip.showNext();
-			showingFront = false;
-		} else {
-			curFlip.showNext();
-			showingFront = true;
+	private float x_down = -1;
+	private float y_down = -1;	
+	private class ScrollListener implements android.view.View.OnTouchListener {
+		public boolean onTouch(View v, MotionEvent event) {
+			switch(event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				x_down = event.getX();
+				y_down = event.getY();
+				break;
+			case MotionEvent.ACTION_UP:
+				if ( (Math.abs(event.getX()-x_down) < 1.0) &&
+						 (Math.abs(event.getY()-y_down) < 1.0) ) {
+					if ((System.currentTimeMillis() - lastTap) < 500)
+						return true;
+					lastTap = System.currentTimeMillis();
+					if (showingFront) {
+						curFlip.showNext();
+						showingFront = false;
+					} else {
+						curFlip.showNext();
+						showingFront = true;
+					}
+					return true;
+				}
+				break;
+			}
+			return false;
 		}
-		return true;
-	}
-	
-  @Override
-  public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-		return false;
-	}
-  
-	@Override
-  public void onLongPress(MotionEvent e) {
-	}
-   
-  @Override
-  public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-		return false;
-	}
-   
-	@Override 
-  public void onShowPress(MotionEvent e) {
 	}
 
 	private void printQ() {
