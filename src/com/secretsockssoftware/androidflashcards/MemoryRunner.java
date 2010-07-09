@@ -302,7 +302,6 @@ public class MemoryRunner extends Activity {
 			View.OnClickListener dslist = new View.OnClickListener() {
 					public void onClick(View v) { 
 						// Don't show this card anymore
-						System.out.println("IJFIOJFE");
 						if ((System.currentTimeMillis() - lastTap) < 500)
 							return;
 						lastTap = System.currentTimeMillis();
@@ -543,31 +542,53 @@ public class MemoryRunner extends Activity {
 		return super.onMenuItemSelected(featureId, item);
 	}
 
+
+	private boolean handleActionDown(MotionEvent event) {
+		x_down = event.getX();
+		y_down = event.getY();
+		return false;
+	}
+
+	private boolean handleActionUp(MotionEvent event) {
+		if ( (Math.abs(event.getX()-x_down) < 5.0) &&
+				 (Math.abs(event.getY()-y_down) < 5.0) ) {
+			if ((System.currentTimeMillis() - lastTap) < 500)
+				return true;
+			lastTap = System.currentTimeMillis();
+			if (showingFront) {
+				curFlip.showNext();
+				showingFront = false;
+			} else {
+				curFlip.showNext();
+				showingFront = true;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		switch(event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			return handleActionDown(event);
+		case MotionEvent.ACTION_UP:
+			return handleActionUp(event);
+		}
+		return false;
+	}
+
 	private float x_down = -1;
 	private float y_down = -1;	
 	private class ScrollListener implements android.view.View.OnTouchListener {
 		public boolean onTouch(View v, MotionEvent event) {
 			switch(event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				x_down = event.getX();
-				y_down = event.getY();
-				break;
+				return handleActionDown(event);
 			case MotionEvent.ACTION_UP:
-				if ( (Math.abs(event.getX()-x_down) < 1.0) &&
-						 (Math.abs(event.getY()-y_down) < 1.0) ) {
-					if ((System.currentTimeMillis() - lastTap) < 500)
-						return true;
-					lastTap = System.currentTimeMillis();
-					if (showingFront) {
-						curFlip.showNext();
-						showingFront = false;
-					} else {
-						curFlip.showNext();
-						showingFront = true;
-					}
-					return true;
-				}
-				break;
+				return handleActionUp(event);
 			}
 			return false;
 		}
