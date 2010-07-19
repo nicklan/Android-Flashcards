@@ -177,8 +177,6 @@ public class MemoryRunner extends Activity {
 
 	private PriorityQueue<CardWrap> queue;
 
-	private long lastTap = 0;	
-
 	@Override
   protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -302,9 +300,6 @@ public class MemoryRunner extends Activity {
 			View.OnClickListener dslist = new View.OnClickListener() {
 					public void onClick(View v) { 
 						// Don't show this card anymore
-						if ((System.currentTimeMillis() - lastTap) < 500)
-							return;
-						lastTap = System.currentTimeMillis();
 						pickCard();
 						if (curWrap != null)
 							goForwardsTo(curWrap.card);
@@ -313,9 +308,6 @@ public class MemoryRunner extends Activity {
 			View.OnClickListener rlist = new View.OnClickListener() {
 					public void onClick(View v) { 
 						// Got it right, schedule further in future
-						if ((System.currentTimeMillis() - lastTap) < 500)
-							return;
-						lastTap = System.currentTimeMillis();
 						int nt = curCount;
 						curWrap.numRight++;
 						if (curWrap.numRight < 6) {
@@ -348,9 +340,6 @@ public class MemoryRunner extends Activity {
 			View.OnClickListener wlist = new View.OnClickListener() {
 					public void onClick(View v) {
 						// Got it wrong, schedule soon
-						if ((System.currentTimeMillis() - lastTap) < 500)
-							return;
-						lastTap = System.currentTimeMillis();
 						curWrap.numRight=0;
 						curWrap.target = curCount+1+((int)(Math.random()*5));
 						curWrap.timestamp = System.currentTimeMillis();
@@ -552,9 +541,6 @@ public class MemoryRunner extends Activity {
 	private boolean handleActionUp(MotionEvent event) {
 		if ( (Math.abs(event.getX()-x_down) < 5.0) &&
 				 (Math.abs(event.getY()-y_down) < 5.0) ) {
-			if ((System.currentTimeMillis() - lastTap) < 500)
-				return true;
-			lastTap = System.currentTimeMillis();
 			if (showingFront) {
 				curFlip.showNext();
 				showingFront = false;
