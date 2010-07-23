@@ -538,9 +538,13 @@ public class MemoryRunner extends Activity {
 		return false;
 	}
 
+	private final float diffAmt = 
+		(Integer.parseInt(android.os.Build.VERSION.SDK) < 8)?
+		5:15;
+
 	private boolean handleActionUp(MotionEvent event) {
-		if ( (Math.abs(event.getX()-x_down) < 5.0) &&
-				 (Math.abs(event.getY()-y_down) < 5.0) ) {
+		if ( (Math.abs(event.getX()-x_down) < diffAmt) &&
+				 (Math.abs(event.getY()-y_down) < diffAmt) ) {
 			if (showingFront) {
 				curFlip.showNext();
 				showingFront = false;
