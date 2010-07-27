@@ -22,13 +22,16 @@ package com.secretsockssoftware.androidflashcards;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -68,10 +71,14 @@ public class CardRunner extends Activity implements OnGestureListener {
 
 	private boolean switch_front_back = false;
 
+	private Menu myMenu;
+
 	private static final int FIRST_CARD_ID = Menu.FIRST;
 	private static final int GOTO_CARD_ID = Menu.FIRST + 1;
 	private static final int LAST_CARD_ID = Menu.FIRST + 2;
 	private static final int SWITCH_FB_ID = Menu.FIRST + 3;
+	private static final int SEARCH_CARDS_ID = Menu.FIRST + 4;
+	private static final int SEARCH_NEXT_ID = Menu.FIRST + 5;
 
 	@Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -322,11 +329,66 @@ public class CardRunner extends Activity implements OnGestureListener {
 	@Override
   public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, FIRST_CARD_ID, 0, R.string.first_card);
-		menu.add(0, GOTO_CARD_ID, 1, R.string.goto_card);
-		menu.add(0, LAST_CARD_ID, 2, R.string.last_card);
-		menu.add(0, SWITCH_FB_ID, 3, R.string.switch_fb);
+		menu.add(0, SEARCH_CARDS_ID, 0, R.string.search_cards);
+		menu.add(0, FIRST_CARD_ID, 2, R.string.first_card);
+		menu.add(0, GOTO_CARD_ID, 3, R.string.goto_card);
+		menu.add(0, LAST_CARD_ID, 4, R.string.last_card);
+		menu.add(0, SWITCH_FB_ID, 5, R.string.switch_fb);
+		myMenu = menu;
 		return true;
+	}
+
+	private String lastSearch = "";
+	private boolean lastCheckStart = false;
+	private boolean lastCheckWrap = false;
+	private int last_found_card = -1;
+	private boolean found_on_back = false;
+	private int current_search_lim;
+
+	/* do a search, return true if something was found and moved to,
+		 false otherwise, so a message can be displayed */
+	private boolean executeSearch(int startCard,
+																boolean startOnBack,
+																boolean wrap,
+																boolean first,
+																String target) {
+		int idx = startCard;
+
+		while (first ||
+					 idx != current_search_lim) {
+			first = false;
+			Card c = lesson.getCard(idx);
+			if (idx == startCard &&
+					!startOnBack &&
+					c.front.indexOf(target) >= 0) {
+				last_found_card = idx;
+				found_on_back = false;
+				if (idx < card_pos)
+					goBackwardsTo(idx);
+				else if (idx > card_pos)
+					goForwardsTo(idx);
+				return true;
+			}
+			if (c.back.indexOf(target) >= 0) {
+				last_found_card = idx;
+				found_on_back = true;
+				if (idx < card_pos) 
+					goBackwardsTo(idx);
+				else if (idx > card_pos)
+					goForwardsTo(idx);
+				if (showingFront) {
+					FixedFlipper cur = currentView();
+					cur.showNext();
+					showingFront = false;
+				}
+				return true;
+			}
+			idx++;
+			if (idx == lesson.cardCount() &&
+					wrap)
+				idx = 0;
+		}
+		return false;
 	}
 
   @Override
@@ -344,7 +406,7 @@ public class CardRunner extends Activity implements OnGestureListener {
 			alert.setMessage("Please enter the card number you want to go to");
 			final EditText input = new EditText(this);
 			input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
-			alert.setView(input);
+			alert.setView(input);																
 			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 						int req_card = Integer.parseInt(input.getText().toString())-1;
@@ -369,6 +431,99 @@ public class CardRunner extends Activity implements OnGestureListener {
 			switch_front_back = !switch_front_back;
 			setCardToCurrent(currentView());
 			return true;
+		case SEARCH_CARDS_ID: {
+			final CardRunner me = this;
+			LayoutInflater factory = LayoutInflater.from(this);
+			final View searchView = factory.inflate(R.layout.search_view, null);
+			final EditText input = (EditText)(searchView.findViewById(R.id.search_text));
+			final CheckBox startCheck = (CheckBox)(searchView.findViewById(R.id.start_cb));
+			final CheckBox wrapCheck = (CheckBox)(searchView.findViewById(R.id.wrap_cb));
+
+			input.setText(lastSearch);
+			startCheck.setChecked(lastCheckStart);
+			wrapCheck.setChecked(lastCheckWrap);
+
+			AlertDialog alert = new AlertDialog.Builder(this)
+				.setTitle("Search Cards")
+				.setMessage("Please enter a search string: ")
+				.setView(searchView)
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							String str = input.getText().toString();
+							if (str.equals("")) {
+								AlertDialog alertDialog = new AlertDialog.Builder(me)
+									.setTitle("Empty Search Sting")
+									.setMessage("Sorry but you can't search for nothing")
+									.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+											public void onClick(DialogInterface dialog, int which) {
+											}})
+									.create();
+								alertDialog.show();
+								return;
+							}
+
+							lastSearch = str;
+							lastCheckStart = startCheck.isChecked();
+							lastCheckWrap = wrapCheck.isChecked();
+
+							current_search_lim = 
+								(lastCheckStart || !lastCheckWrap)?
+								lesson.cardCount():
+								card_pos;
+
+							if (!executeSearch(card_pos,
+																 !showingFront,
+																 lastCheckWrap,
+																 true,
+																 str)) {
+								myMenu.removeItem(SEARCH_NEXT_ID);
+								AlertDialog alertDialog = new AlertDialog.Builder(me).create();
+								alertDialog.setTitle("Not Found");
+								alertDialog.setMessage(str+" not found");
+								alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,"OK", new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int which) {
+										}});	
+								alertDialog.show();
+							} else { // add in the find next button, if needed
+								if (myMenu.findItem(SEARCH_NEXT_ID) == null)
+									myMenu.add(0, SEARCH_NEXT_ID, 1, R.string.search_next);
+							}
+						}		
+					})
+				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							// clicked cancel do nothing
+						}
+					})
+				.create();
+			alert.show();
+			return true;
+		}
+		case SEARCH_NEXT_ID: {
+			boolean sb = false;
+			if (last_found_card >= (lesson.cardCount()-1) &&
+					found_on_back &&
+					lastCheckWrap)
+				last_found_card = 0;
+			else if (found_on_back)
+				last_found_card++;
+			else
+				sb = true;
+			if (!executeSearch(last_found_card,
+												 sb,
+												 lastCheckWrap,
+												 false,
+												 lastSearch)) {
+				myMenu.removeItem(SEARCH_NEXT_ID);
+				AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+				alertDialog.setTitle("No More Matches");
+				alertDialog.setMessage("No more matches for "+lastSearch);
+				alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,"OK", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+						}});	
+				alertDialog.show();
+			}
+		}
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}
