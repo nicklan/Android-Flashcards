@@ -76,6 +76,7 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 	private static final int FEED_BACK_ID = Menu.FIRST;
 	private static final int GET_LESSONS_ID = Menu.FIRST+1;
 	private static final int DELETE_ID = Menu.FIRST+2;
+	private static final int RESCAN_ID = Menu.FIRST+3;
 
 	public static final String sdDir = Environment.getExternalStorageDirectory().getAbsolutePath();
 	private final String rootDir = sdDir+File.separator+"flashcards";
@@ -152,8 +153,9 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 	@Override
   public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, FEED_BACK_ID, 3, R.string.feedback);
-		menu.add(0, GET_LESSONS_ID, 3, R.string.get_lessons);
+		menu.add(0, GET_LESSONS_ID, 0, R.string.get_lessons);
+		menu.add(0, RESCAN_ID, 1, R.string.rescan);
+		menu.add(0, FEED_BACK_ID, 1, R.string.feedback);
 		return true;
 	}
 
@@ -170,6 +172,9 @@ public class AndroidFlashcards extends ListActivity implements Runnable {
 		case GET_LESSONS_ID:
 			final Intent glIntent = new Intent(this,DownloadableLessonList.class);
 			startActivityForResult(glIntent,0);
+			return true;
+		case RESCAN_ID:
+			parseLessons();
 			return true;
 		}
 		return super.onMenuItemSelected(featureId, item);
