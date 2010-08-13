@@ -586,5 +586,23 @@ public class CardRunner extends Activity implements OnGestureListener {
 	@Override 
   public void onShowPress(MotionEvent e) {
 	}
+
+
+	// Event handler for dpad actions
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		if (event.getAction() == event.ACTION_UP) {
+			switch (keyCode) {
+			case KeyEvent.KEYCODE_DPAD_RIGHT:
+				goForwardsTo(card_pos+1);
+				return true;
+			case KeyEvent.KEYCODE_DPAD_LEFT:
+				goBackwardsTo(card_pos-1);
+				return true;
+			default:
+				return false;
+			}
+		}
+		return false;
+	}
              
 }
